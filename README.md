@@ -73,8 +73,9 @@ Make the skills visible to your agent, then just ask — the frontmatter descrip
 request, and the agent drives the same scripts underneath (the two-front-doors principle):
 
 - **In this repo:** Claude Code and Cursor discover `.claude/skills/` automatically — just open it.
-- **Everywhere (user-wide):** symlink the skills into your user dir:
-  `mkdir -p ~/.claude/skills && ln -s ~/Projects/skillroy/.claude/skills/* ~/.claude/skills/`
+- **Everywhere (user-wide):** copy the skill folders into `~/.claude/skills/` (symlinks to a clone
+  work in practice but aren't documented behaviour), or — the supported route — install skillroy as
+  a **plugin**, which also namespaces the skills (`/skillroy:create`).
 
 | Say | Skill that answers |
 |-----|--------------------|
