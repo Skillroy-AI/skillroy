@@ -349,10 +349,12 @@ def main(argv=None):
         ap.error("path is required (or use --self-test)")
 
     catalog = None
-    if args.tokens:
-        catalog, cerr = load_catalog(args.tokens)
+    tokens_path = args.tokens or os.environ.get("SKILLROY_TOKENS")
+    if tokens_path:
+        catalog, cerr = load_catalog(tokens_path)
         if cerr:
             print(f"warning: token catalog not used ({cerr})")
+        args.tokens = tokens_path
     is_single = os.path.isfile(os.path.join(args.path, "SKILL.md"))
     results = lint_path(args.path, args.phase, catalog)
     if not is_single:

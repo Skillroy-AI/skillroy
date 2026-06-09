@@ -32,6 +32,14 @@ PyYAML when present, with a stdlib fallback), then checks the house rules and pr
 `--tokens <catalog>` to check each skill's `metadata.skillroy.domain` against the canonical-token
 catalog (unknown → flag; alias → use the canonical; legacy → note the replacement).
 
+**Finding the token catalog (the lookup ladder):** use the first that applies —
+1. an explicit `--tokens <path>` (or one the user names in chat);
+2. the **`$SKILLROY_TOKENS`** environment variable (the linter reads it automatically when
+   `--tokens` is absent);
+3. the org overlay's documented clone location (e.g. `<org>-skillroy/overlay/tokens/…` cloned
+   beside this repo).
+If none resolves, lint without a catalog and say so — token checks were skipped, not passed.
+
 ### 3. Base-spec + behavioural checks (recommended at publish)
 If `skills-ref` is installed, run `skills-ref validate <skill-dir>` for official base conformance. For
 *behaviour*, run the skill's evals: `python3 scripts/run-evals.py <skill>` validates the `evals.json`

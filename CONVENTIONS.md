@@ -55,7 +55,8 @@ A skill with **no** `metadata.skillroy` block is "not skillroy-instrumented" (a 
 - Enforcement is phase-dependent: **SHOULD** in brainstorming/adhoc, **MUST** at publish.
 - Base skillroy ships the *schema* (`tokens/catalog-schema.md`; validate with
   `tokens/validate-tokens.py`); the *catalog data* lives in the org overlay. `review` checks a skill's
-  `metadata.skillroy.domain` against the catalog via `lint-skill --tokens <catalog>`.
+  `metadata.skillroy.domain` against the catalog via `lint-skill --tokens <catalog>`; when `--tokens`
+  is absent the linter falls back to the **`$SKILLROY_TOKENS`** env var (the catalog lookup ladder).
 
 ## 6. Two front doors
 - **Chat door:** a trigger-rich description + clear `SKILL.md` instructions — a user invokes it
