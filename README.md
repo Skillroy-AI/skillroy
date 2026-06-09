@@ -33,18 +33,53 @@ check); the *why* and full history live in [`DESIGN.md`](./DESIGN.md).
   bindings, org evals. The linter is parameterized by the catalog:
   `lint-skill.py <skills> --tokens <overlay>/tokens/canonical-tokens.yaml`.
 
-## Quickstart
+## Quickstart — CLI
+
+The scripts are plain stdlib Python: run them **from anywhere** by giving the path to the script.
+What your current directory *does* affect is where output lands — `new-skill.py` creates the skill
+folder at `<--dir>/<name>/`, and `--dir` defaults to `.claude/skills` **relative to where you run
+it**. Pass an absolute `--dir` (or `--dest` for migrate) to be explicit:
 
 ```bash
-# author a new skill
-python3 .claude/skills/create/scripts/new-skill.py my-skill --tier dx --kind action
+SKILLROY=~/Projects/skillroy/.claude/skills
 
-# lint it (add --tokens <catalog> when you have an overlay)
-python3 .claude/skills/review/scripts/lint-skill.py .claude/skills
+# author a new skill -> creates <--dir>/my-skill/ (SKILL.md + references/ + evals/)
+python3 $SKILLROY/create/scripts/new-skill.py my-skill --tier dx --kind action \
+    --dir ~/Projects/my-app/.claude/skills
 
-# migrate existing skills to compliance (plan first — read-only)
-python3 .claude/skills/migrate/scripts/migrate-skill.py plan <your-repo>
+# lint one skill or a whole collection (--tokens <catalog> once you have an overlay)
+python3 $SKILLROY/review/scripts/lint-skill.py ~/Projects/my-app/.claude/skills
+
+# validate a skill's evals; --log scaffolds the eval-run record (CONVENTIONS §8)
+python3 $SKILLROY/review/scripts/run-evals.py ~/Projects/my-app/.claude/skills/my-skill --log
+
+# bring an existing repo's skills to compliance (plan is read-only; apply is idempotent)
+python3 $SKILLROY/migrate/scripts/migrate-skill.py plan  ~/Projects/old-repo
+python3 $SKILLROY/migrate/scripts/migrate-skill.py apply ~/Projects/old-repo \
+    --dest ~/Projects/old-repo --tier dx
 ```
+
+Every script takes `--help` and `--self-test`.
+
+## Quickstart — Assisted (AI agent)
+
+Make the skills visible to your agent, then just ask — the frontmatter descriptions route the
+request, and the agent drives the same scripts underneath (the two-front-doors principle):
+
+- **In this repo:** Claude Code and Cursor discover `.claude/skills/` automatically — just open it.
+- **Everywhere (user-wide):** symlink the skills into your user dir:
+  `mkdir -p ~/.claude/skills && ln -s ~/Projects/skillroy/.claude/skills/* ~/.claude/skills/`
+
+| Say | Skill that answers |
+|-----|--------------------|
+| "Research X into a seed doc — here are my sources." | `research` |
+| "Create a new skill from this seed doc." | `create` |
+| "Review my skills — is X ready to publish?" | `review` |
+| "Migrate this repo's skills to skillroy compliance." | `migrate` |
+
+Assisted mode adds what the scripts deliberately *don't* do: gathering sources, authoring
+descriptions/workflows/evals, judging eval runs, and surfacing the judgment calls (tier, domain
+tokens, renames) for you to decide.
 
 ## License
 
