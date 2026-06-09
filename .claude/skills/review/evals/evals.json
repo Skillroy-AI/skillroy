@@ -1,0 +1,50 @@
+{
+  "skill_name": "review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the skill in ./my-skills/deploy-staging for compliance.",
+      "expected_output": "The skill runs lint-skill.py on the folder, reports findings by severity scaled to the skill's phase, and — if there are no errors — reports that it passes at its phase, noting any warnings/infos needed to reach publish. It does not invent canonical tokens.",
+      "files": [],
+      "expectations": [
+        "The skill runs the linter against the given folder (e.g. python3 scripts/lint-skill.py ./my-skills/deploy-staging).",
+        "Findings are reported with severities (error / warn / info) scaled to the skill's declared phase.",
+        "If there are no errors, the skill states the skill passes at its current phase and lists what is needed to advance.",
+        "The skill does not fabricate a canonical token to silence a finding."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Check this skill -- its SKILL.md frontmatter has `description: TODO: fill in` and the folder is named util but the frontmatter says name: utils.",
+      "expected_output": "The linter flags the unquoted-colon frontmatter as invalid YAML and flags name != folder (utils vs util). The review explains both and proposes fixes (quote the description; make name equal the folder, or rename the folder), reported as errors that block the skill.",
+      "files": [],
+      "expectations": [
+        "The review reports that the frontmatter is invalid YAML because of the unquoted 'description: TODO: ...' colon.",
+        "The review reports that name ('utils') does not match the folder ('util').",
+        "Both are reported as errors (blocking), with concrete fixes proposed."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Is the skill at ./skills/release-notes ready to publish?",
+      "expected_output": "The skill lints against the publish bar (overriding or assuming publish phase as appropriate). Missing publish-bar items -- evals, license, no plaintext secrets, both doors if it has scripts -- are reported as blocking errors. It gives a clear ready / not-ready verdict with the specific blockers.",
+      "files": [],
+      "expectations": [
+        "The review evaluates the skill against the publish bar (evals present, license set, no plaintext secrets, two doors if scripts exist).",
+        "Missing publish-bar items are reported as blocking for publish.",
+        "The review gives a clear ready / not-ready verdict listing the specific blockers."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Lint every skill in ./skills and tell me which ones have problems.",
+      "expected_output": "The linter is run against the collection directory (every */SKILL.md under it), and the review summarizes per-skill findings, distinguishing skills with errors from those with only warnings/infos. It offers to fix them.",
+      "files": [],
+      "expectations": [
+        "The linter is run over the whole collection (each */SKILL.md), not just one skill.",
+        "Results are summarized per skill, distinguishing skills with errors from those with only warnings/infos.",
+        "The review offers to apply fixes."
+      ]
+    }
+  ]
+}

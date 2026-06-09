@@ -1,0 +1,25 @@
+# Example canonical token catalog — GENERIC (illustrates the schema; not real data).
+# An organisation keeps its real catalog in its overlay, e.g. <org>-skillroy/tokens/canonical-tokens.yaml
+version: 1
+tokens:
+  - token: storefront
+    name: Storefront Web App
+    domain: web
+    status: confirmed
+    aliases: [shop-ui, storefront-web]
+    sources: ["https://example.invalid/docs/storefront"]
+  - token: order-service
+    name: Order Service
+    domain: commerce
+    status: confirmed
+  - token: pricing
+    name: Pricing Service
+    domain: commerce
+    status: proposed
+    notes: "Token proposed; awaiting domain-owner confirmation."
+  - token: legacy-cart
+    name: Legacy Cart Service
+    domain: commerce
+    status: legacy
+    replaced_by: order-service
+    notes: "Superseded; retained for older deployments."

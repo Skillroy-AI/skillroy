@@ -1,0 +1,53 @@
+{
+  "skill_name": "migrate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Here's our old skills repo ./Legacy-Helpers (skills live in .agents/skills/, no skillroy metadata anywhere, and .gitignore ignores .claude/). What would migrating it involve?",
+      "expected_output": "Plan only. The skill runs migrate-skill.py plan, reports the inventory (skills found and where, uninstrumented ones, missing evals, the gitignore trap, the non-compliant repo name) and surfaces the judgment calls (tier, domain tokens, rename) as questions for the user. Nothing is modified.",
+      "files": [],
+      "expectations": [
+        "The plan command (or equivalent read-only inventory) is run against the source.",
+        "The report covers: where skills live, which lack metadata.skillroy, which lack evals, and the .gitignore trap.",
+        "Tier, domain tokens, and the repo rename are posed as the user's decisions, not chosen by the skill.",
+        "No files are created, moved, or edited during planning."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Go ahead: migrate ./Legacy-Helpers into the new repo ./dx-helpers we agreed on -- tier dx, the lookup skill gets domain token 'helper-core' from our catalog, the other skills have no domain. Original repo stays untouched.",
+      "expected_output": "Apply with ratified inputs. migrate-skill.py apply copies the skills into ./dx-helpers/.claude/skills/, injects metadata.skillroy (phase adhoc, tier dx, domain only on the lookup skill), patches the destination .gitignore, creates the .agents/skills symlink. The source repo is byte-identical afterwards. The skill then reminds that evals + an eval run are still needed before any publish talk, and verifies with review's linter.",
+      "files": [],
+      "expectations": [
+        "apply targets the new repo; the source repo is left unmodified.",
+        "metadata.skillroy is injected with the ratified tier/phase/version; domain appears only on the skill it was ratified for.",
+        "The existing frontmatter and body text of each SKILL.md are preserved exactly (only the metadata block is added).",
+        "The destination .gitignore is patched (.claude/* + !.claude/skills/) and the .agents/skills symlink is created.",
+        "The result is verified with the review linter, and the skill states that publish still requires an eval run.",
+        "Migrated skills get phase adhoc — the skill refuses to set publish during migration."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "While migrating, set the domain for the parsing skill to 'parsetron' -- I just made that name up, it's not in our catalog.",
+      "expected_output": "Token discipline. The skill does not write 'parsetron' as a domain token: it explains tokens come only from the canonical catalog, offers to record it as a PROPOSED token for the catalog owner / SME to ratify (in the overlay catalog, status: proposed), or to migrate the skill domain-less for now.",
+      "files": [],
+      "expectations": [
+        "The skill does not inject the made-up token as a domain.",
+        "It explains that domain tokens must come from the canonical catalog (never invented).",
+        "It offers a compliant path: propose the token in the catalog (status: proposed) for SME ratification, or proceed domain-less."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Re-run the migration of ./Legacy-Helpers into ./dx-helpers -- I'm not sure the first run finished.",
+      "expected_output": "Idempotence. Re-running apply is safe: already-migrated skills are reported as 'destination already exists / already-instrumented' and not duplicated; no double metadata blocks are injected; the gitignore patch and symlink are not repeated. The skill reports what was already done vs newly done.",
+      "files": [],
+      "expectations": [
+        "Re-running apply does not duplicate skills, metadata blocks, gitignore patches, or symlinks.",
+        "Already-completed steps are reported as such (already exists / already-instrumented).",
+        "The report distinguishes what was already in place from anything newly applied."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "skill_name": "research",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm starting a new skill and need a seed doc on deploying containerized services to a serverless platform. Use these two pages -- https://cloud.google.com/run/docs/overview/what-is-cloud-run and https://cloud.google.com/run/docs/deploying -- plus these internal notes: we run one service per component, images come from a container registry built by our CI pipeline, and production services pin min-instances to 1. Write it to serverless-deploy-seed.md.",
+      "expected_output": "Happy path, mixed sources. The skill confirms the brief, routes both URLs to the web adapter and the notes to pasted-text, shows the resolved source list for confirmation before fetching, retrieves the two pages, and writes serverless-deploy-seed.md. The document has the metadata header (Status: Draft (generated), purpose, generated date, source count), a Purpose & scope section, a themed body that MERGES the public serverless concepts with the internal deployment notes (not one section per source), [S1]-[S3] provenance tags, an Open questions & gaps section, and a Sources table listing the two URLs and the notes with retrieval dates. No facts invented beyond the three sources.",
+      "files": [],
+      "expectations": [
+        "A file named serverless-deploy-seed.md is created.",
+        "The document opens with a metadata header containing Status, Purpose, a Generated date, and a source count.",
+        "The Status field reads 'Draft (generated)'.",
+        "The document contains both a 'Purpose & scope' section and an 'Open questions & gaps' section.",
+        "The Sources section lists exactly three sources -- the two documentation URLs and the internal notes -- each with a retrieval or provided date.",
+        "No sources beyond the three the user supplied appear in the Sources list (nothing invented or added).",
+        "Inline provenance tags such as [S1], [S2], [S3] appear in the body, and every tag maps to an entry in the Sources list.",
+        "The internal notes (one service per component, registry images, min-instances 1) are woven into thematic sections rather than confined to a single notes-dump section.",
+        "Before fetching, the skill shows the resolved source list and waits for the user's confirmation.",
+        "Claims attributed to the documentation pages are supported by those pages and are not contradicted or fabricated."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/research -- I want to build a new skill about our internal reference-data lookup service.",
+      "expected_output": "Under-specified invocation, tests elicitation. Because no sources or scope were given, the skill does NOT start fetching, synthesizing, or writing. It prompts for the brief -- topic/purpose confirmation, intended use & audience, scope (in and out), the sources to synthesize (web pages, local files, pasted notes, or any installed extension sources), and the desired output filename/location -- then waits for the user. It does not fabricate service details from prior knowledge.",
+      "files": [],
+      "expectations": [
+        "No seed document file is created during this turn.",
+        "The skill asks the user for the brief before performing any research or retrieval.",
+        "The skill explicitly asks the user to provide the sources to synthesize.",
+        "The skill asks about scope and the intended use/audience.",
+        "The skill asks for the desired output filename or location.",
+        "The skill does not retrieve any web pages and does not state facts about the service drawn from its own prior knowledge."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Pull together a seed doc for a skill about our data-feed format. The authoritative spec lives in our internal wiki at WIKI/Feed Spec, and there's also the public XML Schema primer at https://www.w3.org/TR/xmlschema11-1/. Output feed-format-seed.md.",
+      "expected_output": "Unavailable adapter, tests graceful degradation. Run this WITHOUT an internal-wiki extension installed. The skill routes the W3C URL to the web adapter. For the internal-wiki reference it finds no available adapter (no matching file under references/sources/ and no corresponding MCP tool), so it says so plainly and asks how to proceed -- e.g. paste the page content or install/enable a wiki extension -- rather than inventing the spec. If the user opts to continue with just the reachable source, it produces feed-format-seed.md from the W3C page, with an Open questions & gaps entry noting the internal Feed Spec was unavailable, and a Sources table listing only what was actually retrieved.",
+      "files": [],
+      "expectations": [
+        "The W3C URL (https://www.w3.org/TR/xmlschema11-1/) is routed to the web adapter and retrieved.",
+        "The skill explicitly tells the user that no adapter is available for the internal-wiki source (no wiki extension or MCP tool is present).",
+        "The skill does not fabricate or invent contents for the 'WIKI/Feed Spec' page.",
+        "The skill asks the user how to proceed about the unavailable source (for example: paste the content, or install/enable a wiki extension).",
+        "If a seed document is produced, its Sources list includes only sources actually retrieved (the W3C page) and excludes the internal-wiki page.",
+        "If a seed document is produced, its Open questions & gaps section notes that the internal Feed Spec was unavailable."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I've attached an internal operations runbook. Turn it into a seed doc for an ops skill -- I want the operational procedures captured as a reference. Save it as runbook-ops-seed.md.",
+      "expected_output": "Tests the local-file adapter. The skill reads the attached file (extracting text appropriately for its type rather than dumping raw bytes), confirms scope, and writes runbook-ops-seed.md -- themed by procedure/topic, with [S1] provenance, a Sources entry for the file (name, type, retrieved date), and an Open questions & gaps section for anything the runbook leaves implicit. When running this case, attach any real spec or runbook (PDF, DOCX, or MD) as the source; the filename in files is a placeholder to be swapped for the attachment.",
+      "files": ["operations-runbook.pdf"],
+      "expectations": [
+        "The attached file is read and its text extracted appropriately (not dumped as raw bytes).",
+        "A file named runbook-ops-seed.md is created.",
+        "The body is organised by procedure/topic (themed), not as a single raw dump of the file.",
+        "Inline [S1] provenance tags appear and map to a Sources entry for the file (name, type, retrieved date).",
+        "The document includes an 'Open questions & gaps' section for anything the runbook leaves implicit."
+      ]
+    }
+  ]
+}

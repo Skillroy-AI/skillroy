@@ -1,0 +1,56 @@
+{
+  "skill_name": "create",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a skill that runs our smoke tests after a deploy and summarizes failures. It's an action, ops tier. Name it whatever's compliant.",
+      "expected_output": "Happy path. The skill confirms the brief, proposes a compliant verb-style name (e.g. `smoke-test` or `check-deploy`) plus an alternative, and scaffolds the skill folder: a SKILL.md whose frontmatter name equals the folder name, a what+when description, and a metadata.skillroy block (phase, tier: ops, version), plus references/ and an evals/ stub. It does not invent a canonical token; if a domain token is needed it asks. It hands off with the phase and what would take it to publish.",
+      "files": [],
+      "expectations": [
+        "A skill folder is scaffolded with a SKILL.md, a references/ directory, and an evals/ stub.",
+        "The SKILL.md frontmatter `name` exactly equals the new folder name and is kebab-case.",
+        "The frontmatter contains a metadata.skillroy block with phase, tier (ops), and version.",
+        "The proposed name is a verb/verb-phrase (action skill) and does not repeat the word 'skill' or the repo/domain.",
+        "The description is written as what-it-does + when-to-use-it (trigger phrases), not just a label.",
+        "No canonical/domain token is invented; if one is needed the skill asks rather than guessing."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/create -- I want a new skill.",
+      "expected_output": "Under-specified invocation, tests elicitation. Because nothing was specified, the skill does NOT scaffold anything yet. It asks for the brief: what the skill does and when it should trigger, whether it's an action or knowledge skill, the tier, the domain/canonical token (if any), and the phase. Then it waits for the user.",
+      "files": [],
+      "expectations": [
+        "No skill folder or files are created during this turn.",
+        "The skill asks what the new skill should do and when it should trigger (the what + when).",
+        "The skill asks whether it is an action (verb) or knowledge (noun) skill, and for the tier.",
+        "The skill asks for the phase (brainstorming / adhoc / publish).",
+        "The skill does not fabricate a name, tier, or canonical token on the user's behalf."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Make a skill called MyDeploy_Helper_v2.",
+      "expected_output": "Non-compliant name, tests naming enforcement. The skill flags that the proposed name violates conventions (uppercase, underscores, a version baked into the name) and proposes a compliant kebab-case alternative (e.g. `deploy-helper`), explaining that names are API contracts and versions belong in metadata.skillroy.version, not the name. It only scaffolds once a compliant name is agreed.",
+      "files": [],
+      "expectations": [
+        "The skill explicitly identifies that 'MyDeploy_Helper_v2' is non-compliant (uppercase and/or underscores and/or a version in the name).",
+        "The skill proposes a compliant kebab-case [a-z0-9-] alternative name.",
+        "The skill notes that the version belongs in metadata.skillroy.version (or a tag), not in the name.",
+        "The skill does not create a folder literally named 'MyDeploy_Helper_v2'."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Create an ops skill for our frobnicator service. Use the domain token `frobnicator`.",
+      "expected_output": "Canonical-token discipline. `frobnicator` is not in the collection's token catalog. The skill does NOT silently accept or invent it: it surfaces that the token isn't in the catalog and asks how to proceed (add it to the catalog first, choose an existing token, or confirm it's intentional), rather than scaffolding with a fabricated token.",
+      "files": [],
+      "expectations": [
+        "The skill checks the supplied domain token against the collection's catalog rather than accepting it blindly.",
+        "The skill reports that `frobnicator` is not a known canonical token.",
+        "The skill asks how to proceed (e.g. register the token in the catalog, or pick an existing one) instead of inventing/guessing.",
+        "The skill does not finalize a scaffold that bakes in an unvetted canonical token without flagging it."
+      ]
+    }
+  ]
+}
