@@ -34,8 +34,9 @@ first migrated consumer collection — both git-initialized with clean trees.
 1. Owner test runs: `research` + `create` a brand-new skill end-to-end; `migrate` the remaining
    sibling collections into the org hub's `collections/` (the deployment/monorepo structure was
    settled 2026-06-09 — see retro).
-2. Push: skillroy → GitHub (then fix the marketplace `REPLACE-ME` slug in the org hub); hub +
-   migrated repo → Bitbucket; run the hub README's pre-push plugin test checklist.
+2. **skillroy is live: github.com/Skillroy-AI/skillroy** (pushed 2026-06-09; authors rewritten to
+   the skillroy.ai identity pre-push; marketplace slug updated in the org hub). Remaining: hub +
+   migrated repo → Bitbucket; run the hub README's plugin test checklist.
 3. Deferred ideas: `explain` skill (CONVENTIONS+README currently serve this); overlay *install*
    tooling (adapter files are copied by hand today); `skills-ref` as a native dependency once a
    Linux-side node exists; Cursor user-level skills support (unverified) for the meta-skills.
