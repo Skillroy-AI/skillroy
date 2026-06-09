@@ -31,12 +31,14 @@ pass with a recorded run log in `evals/runs/`, official `skills-ref validate` Va
 first migrated consumer collection — both git-initialized with clean trees.
 
 **Pending / next steps:**
-1. Owner test runs: `research` + `create` a brand-new skill end-to-end; re-run `migrate` on another
-   existing collection.
-2. Push: skillroy → GitHub; overlay + migrated repo → Bitbucket (owner's accounts/console).
+1. Owner test runs: `research` + `create` a brand-new skill end-to-end; `migrate` the remaining
+   sibling collections into the org hub's `collections/` (the deployment/monorepo structure was
+   settled 2026-06-09 — see retro).
+2. Push: skillroy → GitHub (then fix the marketplace `REPLACE-ME` slug in the org hub); hub +
+   migrated repo → Bitbucket; run the hub README's pre-push plugin test checklist.
 3. Deferred ideas: `explain` skill (CONVENTIONS+README currently serve this); overlay *install*
    tooling (adapter files are copied by hand today); `skills-ref` as a native dependency once a
-   Linux-side node exists.
+   Linux-side node exists; Cursor user-level skills support (unverified) for the meta-skills.
 
 (Org-specific in-flight work — e.g. an overlay instrumentation dry-run pending review — is tracked in
 the session memory, not in this vendor-neutral doc.)
@@ -439,7 +441,24 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   (new-project one-shot; non-compliant collection name) → fresh 6/6 run log supersedes the
   reconstructed one. README quickstart updated earlier the same day (CLI vs Assisted split, where
   outputs land — prompted by owner questions about `--dir` semantics).
-- **2026-06-09 (session 3) — both repos publish-ready.** skillroy: README rewritten for publication
+- **2026-06-09 (session 3) — deployment story + monorepo structure settled.** Verified against the
+  official docs (guide agent): plugins bundle skills with a custom-path `skills` manifest field (so
+  a collection keeps `.claude/skills/` as its single layout and a 5-line `plugin.json` re-points
+  the plugin at it); a marketplace is any git repo with `.claude-plugin/marketplace.json`, private
+  Bitbucket included, with **relative in-repo plugin sources**; updates via marketplace refresh
+  (opt-in autoUpdate); project `.claude/settings.json` can auto-prompt marketplace+plugin install
+  on first trusted open; symlinks into `~/.claude/skills/` are *undocumented* (README corrected).
+  **Deployment is two-phase:** (1) manual — clone + `$SKILLROY_TOKENS` (new env rung in
+  `lint-skill`, part of the documented catalog lookup ladder: flag → env → overlay clone);
+  (2) plugin marketplace — skillroy carries `.claude-plugin/plugin.json`; the org hub doubles as
+  the private marketplace. **Structure (ratified): "skills follow their subject."** The org hub
+  (`<org>-skillroy`) = `overlay/` (the org plugin: tokens + extensions) + `collections/` (the
+  monorepo home for *pure* collections — skills whose tools are bundled scripts; the owner's
+  sibling-repo survey confirmed nearly all existing skills qualify) + the marketplace index.
+  Code-bound collections (skills driving a co-built artifact, e.g. the migrated `dx-tlog` jar)
+  stay with their code — deploy by clone; fold-in route = publish the tool as a versioned external
+  dep. Team bootstrap: the migrated repo carries the settings.json example. Collection naming on
+  migration: org prefix + `-skills`/`-tools` suffixes drop (`<org>-dfm-kb-skills` → `kb-dfm`). skillroy: README rewritten for publication
   (skills table, quickstart, mechanism-vs-policy, collection metadata block §10), git-initialized
   with the full tree as the initial commit (GitHub push = owner). Overlay (`<org>-skillroy`):
   README finalized (license ratified proprietary-internal; `depends-on: [skillroy]` block), org
