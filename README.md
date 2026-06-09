@@ -43,7 +43,13 @@ it**. Pass an absolute `--dir` (or `--dest` for migrate) to be explicit:
 ```bash
 SKILLROY=~/Projects/skillroy/.claude/skills
 
-# author a new skill -> creates <--dir>/my-skill/ (SKILL.md + references/ + evals/)
+# start a whole new collection (repo) + its first skill in one shot
+#   -> creates ~/Projects/dx-widgets/ (README metadata block, .claude/skills/ home,
+#      safe .gitignore, .agents symlink); git init is the printed next step
+python3 $SKILLROY/create/scripts/new-collection.py dx-widgets --dir ~/Projects \
+    --with-skill reshape --owner "You" --license Apache-2.0
+
+# or: author a new skill into an existing collection -> creates <--dir>/my-skill/
 python3 $SKILLROY/create/scripts/new-skill.py my-skill --tier dx --kind action \
     --dir ~/Projects/my-app/.claude/skills
 
@@ -73,7 +79,7 @@ request, and the agent drives the same scripts underneath (the two-front-doors p
 | Say | Skill that answers |
 |-----|--------------------|
 | "Research X into a seed doc — here are my sources." | `research` |
-| "Create a new skill from this seed doc." | `create` |
+| "Create a new skill from this seed doc — in this repo or a brand-new project." | `create` |
 | "Review my skills — is X ready to publish?" | `review` |
 | "Migrate this repo's skills to skillroy compliance." | `migrate` |
 

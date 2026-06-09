@@ -1,11 +1,11 @@
 ---
 name: create
-description: Author a new skillroy-compliant Agent Skill — or bring an existing one toward compliance. Scaffolds the skill folder and a conventions-correct SKILL.md (tier-aware name, what+when description, the metadata.skillroy block), plus references/, scripts/, and evals/, and applies the phase-appropriate quality bar (naming, canonical tokens, two front doors). Use when creating, scaffolding, or authoring a new skill; starting a skill from a research seed document; or making an existing skill skillroy-compliant. Pairs with `research` (turns sources into the seed doc this consumes) and `review` (lints a finished skill).
+description: Author a new skillroy-compliant Agent Skill — in an existing collection or in a brand-new one — or bring an existing skill toward compliance. Scaffolds the collection shell when needed (README metadata block, skills home, gitignore, .agents symlink) and the skill folder with a conventions-correct SKILL.md (tier-aware name, what+when description, the metadata.skillroy block), plus references/, scripts/, and evals/, applying the phase-appropriate quality bar. Use when creating, scaffolding, or authoring a new skill or skill collection/repo; starting a skill from a research seed document; or making an existing skill skillroy-compliant. Pairs with `research` (turns sources into the seed doc this consumes) and `review` (lints the result).
 metadata:
   skillroy:
     phase: publish
     tier: meta
-    version: 0.1.0
+    version: 0.2.0
 license: Apache-2.0
 ---
 
@@ -16,13 +16,27 @@ open standard, written to skillroy's house conventions. The enforceable rules ar
 skillroy's repo-root `CONVENTIONS.md` (rationale lives in `DESIGN.md`); read that first.
 
 **Two front doors.** Drive this conversationally (you need know nothing about the scripts), or run
-the bundled scaffolder directly — `scripts/new-skill.py` — outside a chat. Run it as
-`python3 scripts/new-skill.py <name> --tier <tier> --phase <phase>` (`--help` for all options;
-`--self-test` to verify it offline).
+the bundled scaffolders directly outside a chat (`--help` / `--self-test` on each):
+- `python3 scripts/new-skill.py <name> --tier <tier> --dir <collection>/.claude/skills` — a skill
+  into an existing collection;
+- `python3 scripts/new-collection.py <tier>-<domain> --dir <parent> [--with-skill <name>]` — a new
+  compliant collection (README metadata block, skills home, safe gitignore, `.agents` symlink), and
+  optionally its first skill in the same shot.
 
 ## Workflow
 
 Work in order; skip anything already supplied (a seed doc, a stated tier, a chosen name).
+
+### 0. Locate or create the collection
+Skills live in **collections** (a repo of related skills in one domain — CONVENTIONS §10). Establish
+where this skill goes:
+- **Existing collection** → scaffold into its `.claude/skills/` and move on.
+- **New collection** → settle the collection name (`<tier>-<domain>`; brand names are the ratified
+  exception) and scaffold the shell with `scripts/new-collection.py` (use `--with-skill` to create
+  the first skill in the same run). The script is git-free by design — offer to `git init -b main`
+  and make the initial commit as a follow-up, and remind the user a new collection starts
+  `status: experimental` in its README metadata block (promote to `active` once it has real,
+  linted content).
 
 ### 1. Capture intent
 Establish, asking only for what's missing:

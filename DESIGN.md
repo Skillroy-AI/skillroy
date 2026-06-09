@@ -161,10 +161,16 @@ STATUS file? §10)*
     read by Claude Code + Cursor).
     First real meta- skill and first to ship evals. Chat-first (its one natural CLI "second door"
     would be a seed-doc validator — deferred to publish, see §10).
-  - **`create`** — *landed 2026-06-07*. Authors a compliant skill (chat door = the `SKILL.md`
-    workflow; CLI door = `scripts/new-skill.py` scaffolder). Enforces naming, the `metadata.skillroy`
-    block, and the phase bar; consumes a `research` seed doc. Applies the repo-root `CONVENTIONS.md`
-    (the v0 enforceable rules); ships evals.
+  - **`create`** — *landed 2026-06-07; collection capability 2026-06-09*. Authors a compliant skill
+    (chat door = the `SKILL.md` workflow; CLI doors = `scripts/new-skill.py` +
+    `scripts/new-collection.py`). Workflow step 0 locates **or creates** the collection: one skill,
+    two scripts (ratified over a split `create-collection` skill — the user's intent is "a skill",
+    the collection is routing; and over an `init` name — `/init` is a reserved built-in).
+    `new-collection.py` scaffolds the §10 shell (README metadata block at `status: experimental`,
+    home, safe gitignore, `.agents` symlink; `--with-skill` adds the first skill, inheriting the
+    collection tier; `--brand` is the explicit naming escape; git-free — init is a printed
+    next-step). Enforces naming, the `metadata.skillroy` block, and the phase bar; consumes a
+    `research` seed doc; ships evals (6).
   - **`review`** — *landed 2026-06-07*. Lints a skill/collection (chat door) via
     `scripts/lint-skill.py` (CLI door): frontmatter validity, `name==folder`, naming/tier,
     `metadata.skillroy`, two-doors, secrets, and the phase bar; severities scale by phase. Wraps the
@@ -421,6 +427,18 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   the previously-ratified evals, lint clean against the org catalog, then an identity commit
   (README title + collection metadata block, Maven parent artifactId, self-references; `mvn validate`
   clean). Original repo untouched; its instrumentation branch is now redundant (owner may delete).
+- **2026-06-09 (session 3) — `create` grows the collection capability (v0.2.0).** Owner raised the
+  gap: skills live in collections, but nothing scaffolds one for *new* work (`migrate` only shapes
+  existing content). Ratified: **one `create` skill, two scripts** (not a split skill — intent is
+  "a skill", the collection is routing detail; not `init` — reserved built-in); scripts stay
+  **git-free** (uniform rule; init is a printed next-step the chat door offers to run); new
+  collections start **`status: experimental`**. Built `scripts/new-collection.py` (validates
+  `<tier>-<domain>` + redundant-suffix, `--brand` escape, scaffolds the §10 shell, `--with-skill`
+  delegates to the sibling `new-skill.py` with the tier inherited, `--license` propagates;
+  `--self-test`). SKILL.md gains workflow step 0 (locate-or-create the collection); evals 5–6 added
+  (new-project one-shot; non-compliant collection name) → fresh 6/6 run log supersedes the
+  reconstructed one. README quickstart updated earlier the same day (CLI vs Assisted split, where
+  outputs land — prompted by owner questions about `--dir` semantics).
 - **2026-06-09 (session 3) — both repos publish-ready.** skillroy: README rewritten for publication
   (skills table, quickstart, mechanism-vs-policy, collection metadata block §10), git-initialized
   with the full tree as the initial commit (GitHub push = owner). Overlay (`<org>-skillroy`):

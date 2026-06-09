@@ -139,8 +139,11 @@ Lint output is **provenance-stamped** (skillroy version / commit + token-catalog
 a footer line in text mode) so a report can be traced to the rules and catalog that produced it.
 
 ## 10. Collections & overlays
-- A **collection** is a repo of skills under the home dir (§1). Its README carries a **collection
-  metadata block** — volatile facts live here, never in the repo name (§2):
+- A **collection** is a repo of skills under the home dir (§1). Scaffold a new one with `create`'s
+  `scripts/new-collection.py` (`--with-skill` adds the first skill; git init is a follow-up — the
+  scripts are git-free). New collections start `status: experimental`; promote to `active` once
+  there's real, linted content. Its README carries a **collection metadata block** — volatile facts
+  live here, never in the repo name (§2):
 
   ```yaml
   collection:

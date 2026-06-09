@@ -51,6 +51,31 @@
         "The skill asks how to proceed (e.g. register the token in the catalog, or pick an existing one) instead of inventing/guessing.",
         "The skill does not finalize a scaffold that bakes in an unvetted canonical token without flagging it."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "I'm starting a brand-new project for our widget data utilities -- there's no repo yet. Create it with a first skill that reshapes widget exports. Tier dx, domain 'widgets'... call the project whatever's compliant.",
+      "expected_output": "New collection + first skill in one flow. The skill settles a compliant <tier>-<domain> collection name (e.g. dx-widgets), scaffolds the collection shell (README with the §10 metadata block at status: experimental, .claude/skills/ home, the safe .gitignore, .gitattributes, .agents/skills symlink) via new-collection.py --with-skill, with the skill inheriting tier dx. It offers git init as a follow-up (the script is git-free) and checks 'widgets' against the token catalog if one is supplied rather than asserting it.",
+      "files": [],
+      "expectations": [
+        "A compliant <tier>-<domain> collection name is proposed (not the user's words verbatim if non-compliant).",
+        "The collection shell is scaffolded: README containing a collection metadata block with status: experimental, a .claude/skills/ home, a .gitignore that does not swallow the skills home, and the .agents/skills symlink.",
+        "The first skill is scaffolded inside the new collection's home and inherits the collection's tier.",
+        "git init is offered as a follow-up step, not run by the scaffolder.",
+        "The domain token is validated against a catalog when available, or surfaced as needing one -- not silently asserted."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Set up a new skills project called Widget_Utils_Tools for the team.",
+      "expected_output": "Non-compliant collection name. The skill flags Widget_Utils_Tools (uppercase, underscores, redundant -Tools suffix, no tier) and proposes a compliant <tier>-<domain> alternative (asking for the tier if unclear). It scaffolds only once a compliant name (or an explicit brand-name exception) is agreed; new-collection.py itself also rejects the non-compliant form.",
+      "files": [],
+      "expectations": [
+        "The skill identifies the name as non-compliant: case, underscores, and the redundant -Tools suffix are called out, and the missing tier is raised.",
+        "A compliant <tier>-<domain> alternative is proposed, with the tier elicited if not stated.",
+        "No folder named Widget_Utils_Tools is created.",
+        "The brand-name escape (--brand) is mentioned only as an explicit, deliberate exception, not applied silently."
+      ]
     }
   ]
 }
