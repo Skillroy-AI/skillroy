@@ -41,7 +41,10 @@ catalog (unknown → flag; alias → use the canonical; legacy → note the repl
 If none resolves, lint without a catalog and say so — token checks were skipped, not passed.
 
 ### 3. Base-spec + behavioural checks (recommended at publish)
-If `skills-ref` is installed, run `skills-ref validate <skill-dir>` for official base conformance. For
+If `skills-ref` is installed, run `skills-ref validate <skill-dir>` for official base conformance. If
+the collection has a `resources.yaml` (external-resources manifest, CONVENTIONS §11), validate it with
+`python3 <skillroy>/resources/validate-resources.py <resources.yaml>` (lint-skill only checks it's
+well-formed + nudges when it's missing; this is the full per-entry check). For
 *behaviour*, run the skill's evals: `python3 scripts/run-evals.py <skill>` validates the `evals.json`
 and lists the cases; run the skill against each `prompt` and check its `expectations` (CONVENTIONS §8)
 — at publish, evals must exist **and pass**. `lint-skill` adds the skillroy house rules on top; it

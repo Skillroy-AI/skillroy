@@ -28,6 +28,18 @@ SECRET_RE = re.compile(
     r"(?i)\b(password|secret|api[_-]?key|access[_-]?token|private[_-]?key)\b\s*[:=]\s*['\"]?\S{8,}")
 SEV_ORDER = {"info": 0, "warn": 1, "error": 2}
 SKIP_DIRS = {"skills", ".claude", ".agents", ".cursor", ".codex"}
+# Strong signals that a skill leans on an external resource that ought to be declared (CONVENTIONS §11).
+EXTERNAL_REF_RE = re.compile(r"(git clone |~/Projects/|https?://\S*atlassian\.net|\bbitbucket\.org|\bgs://|\.war\b)")
+
+
+def find_collection_root(skill_or_home_dir):
+    """The collection root above a skill dir or a skills-home dir (the part before .claude/.agents/.cursor)."""
+    p = os.path.abspath(skill_or_home_dir)
+    parts = p.split(os.sep)
+    for marker in (".claude", ".agents", ".cursor"):
+        if marker in parts:
+            return os.sep.join(parts[:parts.index(marker)]) or os.sep
+    return os.path.dirname(os.path.dirname(p))
 
 
 def split_frontmatter(text):
@@ -200,6 +212,15 @@ def lint_skill(skill_dir, phase_override=None, catalog=None):
         add("warn", "evals-run", "no recorded eval run in evals/runs/ — scaffold with run-evals.py --log (§8)")
     if not data.get("license"):
         add("error" if pub else "info", "license", "no 'license' in frontmatter (publish-bar item)")
+
+    # External resources (§11): a non-meta skill that references clones/URLs/artifacts should have its
+    # collection declare them in resources.yaml. We nudge only when the manifest is entirely absent;
+    # validate-resources.py does the per-entry check. Meta skills (which act on skills) are exempt —
+    # their "git clone"/path mentions are instructional, not dependencies.
+    if meta.get("tier") != "meta" and EXTERNAL_REF_RE.search(body):
+        if not os.path.isfile(os.path.join(find_collection_root(skill_dir), "resources.yaml")):
+            add("warn" if pub else "info", "resources",
+                "references external resources (clone/URL/artifact) but the collection has no resources.yaml (§11)")
     return result
 
 
@@ -216,6 +237,24 @@ def collection_findings(path):
     if name and REDUNDANT_SUFFIX_RE.search(name):
         out.append(("info", "collection-name",
                     f"collection '{name}' has a redundant suffix (-tools/-skills/-repo) — the tier conveys that"))
+
+    # External-resources manifest (§11): if present at the collection root, it must be well-formed.
+    # Deep per-entry validation is validate-resources.py's job (point the user there).
+    manifest = os.path.join(find_collection_root(path), "resources.yaml")
+    if os.path.isfile(manifest):
+        try:
+            import yaml
+            rdata = yaml.safe_load(open(manifest, encoding="utf-8"))
+            if not isinstance(rdata, dict) or not isinstance(rdata.get("resources"), list):
+                out.append(("error", "resources",
+                            "resources.yaml malformed (needs version + a 'resources' list) — run resources/validate-resources.py"))
+            else:
+                out.append(("info", "resources",
+                            f"resources.yaml present ({len(rdata['resources'])} resources) — validate fully with resources/validate-resources.py"))
+        except ImportError:
+            pass  # YAML lib absent; frontmatter path already degrades gracefully
+        except Exception as exc:
+            out.append(("error", "resources", f"resources.yaml is not valid YAML: {exc}"))
     return name, out
 
 
@@ -278,6 +317,30 @@ def self_test():
             "run log present but still flagged"
 
         assert "skillroy" in provenance(), "provenance stamp missing skillroy version"
+
+        # §11 external-resources: a non-meta skill referencing a clone/artifact with no manifest → nudge;
+        # a meta skill with the same body text is exempt; a present resources.yaml clears the nudge.
+        coll = os.path.join(tmp, "dx-things", ".claude", "skills")
+        dxsk = os.path.join(coll, "fetchy")
+        os.makedirs(dxsk)
+        body_ext = ("---\nname: fetchy\ndescription: \"x\"\n"
+                    "metadata:\n  skillroy:\n    phase: adhoc\n    tier: dx\n    version: 0.1.0\n---\n"
+                    "# fetchy\nRun `git clone` of the repo and use BeanstoreServer.war.\n")
+        open(os.path.join(dxsk, "SKILL.md"), "w").write(body_ext)
+        assert any(f["code"] == "resources" for f in lint_skill(dxsk)["findings"]), "missing-manifest nudge not raised"
+        # same body, meta tier → exempt
+        metask = os.path.join(tmp, "meta-things", ".claude", "skills", "fetchy")
+        os.makedirs(metask)
+        open(os.path.join(metask, "SKILL.md"), "w").write(body_ext.replace("tier: dx", "tier: meta"))
+        assert not any(f["code"] == "resources" for f in lint_skill(metask)["findings"]), "meta skill should be exempt"
+        # add a resources.yaml at the collection root → nudge clears
+        open(os.path.join(tmp, "dx-things", "resources.yaml"), "w").write(
+            "version: 1\nresources:\n  - id: r\n    type: artifact\n    description: d\n")
+        assert not any(f["code"] == "resources" for f in lint_skill(dxsk)["findings"]), "manifest present but still nudged"
+        # a broken manifest is an error at collection scope
+        open(os.path.join(tmp, "dx-things", "resources.yaml"), "w").write("version: 1\nresources: not-a-list\n")
+        _, cf2 = collection_findings(coll)
+        assert any(c == "resources" and s == "error" for s, c, _ in cf2), "broken resources.yaml not flagged"
 
         uninst = os.path.join(tmp, "uninst")
         os.makedirs(uninst)

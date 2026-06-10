@@ -134,6 +134,8 @@ Agent-Skills conformance — run it separately if installed). Severity scales by
 | `license` present (§3, §7) | `license` | info → error at publish |
 | `domain` in token catalog (§5; with `--tokens`) | `token` | by phase |
 | repo/collection name kebab + no redundant suffix (§2) | `collection-name` | info |
+| `resources.yaml` well-formed if present (§11) | `resources` | error |
+| references external resources but no manifest (§11; non-meta) | `resources` | info → warn at publish |
 
 Run: `python3 .claude/skills/review/scripts/lint-skill.py <skill-or-collection> [--tokens <catalog>]`.
 Lint output is **provenance-stamped** (skillroy version / commit + token-catalog digest in `--json`;
@@ -180,5 +182,9 @@ a footer line in text mode) so a report can be traced to the rules and catalog t
   Bitbucket **Downloads** area) are fetched per-use and **provenance-stamped** with the version used;
   `live-env`/`mcp` are documented requirements, not shipped files; secrets are always a reference to
   a secret manager, never stored.
-- *(Future: a `lint-skill` check that every external path/URL a skill references is declared here —
-  the way `--tokens` closed the loop for domains. Not built yet.)*
+- **Validate** a manifest with `resources/validate-resources.py <resources.yaml>` (the CLI door:
+  type-specific checks + a plaintext-secret scan; `--self-test`). `review`/`lint-skill` adds two house
+  checks: a present `resources.yaml` must be well-formed (`error` if not), and a **non-meta** skill
+  that references a clone/URL/artifact while its collection has **no** manifest is nudged
+  (`info` → `warn` at publish) to declare one. (Meta skills are exempt — their clone/path mentions are
+  instructional, not dependencies.)
