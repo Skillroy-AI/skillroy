@@ -8,38 +8,43 @@ history below is preserved; the retro cadence continues.
 > Started as a whiteboard, deliberately not rushed (§8). Open questions are tracked in §10;
 > decisions and changes are logged in §11 (Retro log) — the retro log is the source of truth.
 
-## Status — resume here (2026-06-09, session 3)
+## Status — resume here (2026-06-10, session 3 cont.)
 
-skillroy (this repo) is **vendor-neutral, Apache-2.0**; org-specific data (tokens, overrides) lives
-in a separate `<org>-skillroy` overlay. Layout home = `.claude/skills/`. Authoritative rules =
-`CONVENTIONS.md` (v0.3: rule→check→severity table, eval **run-log** convention,
-simulated-interactive norm, collections/overlays §10).
+skillroy (this repo) is **vendor-neutral, Apache-2.0, PUBLIC on GitHub** (`Skillroy-AI/skillroy`;
+commits use a GitHub-noreply identity); org-specific data lives in a separate `<org>-skillroy`
+overlay. Layout home = `.claude/skills/`. Authoritative rules = `CONVENTIONS.md` (**v0.4**:
+rule→check→severity table, eval **run-log** convention, simulated-interactive norm,
+collections/overlays §10, **external-resources manifest §11**).
 
 **Built & green — all FOUR skills at `phase: publish`** (full bar each: lint clean at publish, evals
 pass with a recorded run log in `evals/runs/`, official `skills-ref validate` Valid):
 - **`research`** (v0.2.0, second door `validate-seed.py`), **`create`**, **`review`** (v0.2.0; name
   kept per the ratified §2 exception), **`migrate`** (new this session — mechanical migration
   scripted via `migrate-skill.py` plan/apply; judgment calls are inputs, publish refused by design).
-- Scripts (stdlib, all `--self-test`): `new-skill`, `lint-skill` (+ provenance-stamped output,
-  `evals-run` check), `run-evals` (+ `--log` run-log scaffolder), `validate-seed`, `validate-tokens`,
-  `migrate-skill`.
-- `tokens/` (schema + validator + generic example); README rewritten for publication (quickstart,
-  collection metadata block).
+- Scripts (stdlib, all `--self-test`): `new-skill`, `new-collection`, `lint-skill` (+ provenance
+  stamp, `evals-run` + `resources` checks), `run-evals` (+ `--log`), `validate-seed`,
+  `validate-tokens`, `validate-resources`, `migrate-skill`.
+- `tokens/` (schema + validator + example) and `resources/` (schema + validator + example) — the two
+  declared-data conventions. README rewritten for publication; `.claude-plugin/plugin.json` makes the
+  repo plugin-installable.
 
 **Proven downstream (org side, repos local-only until pushed):** the overlay
 (`<org>-skillroy`: catalog 27 tokens, org conventions, research source-adapter extension) and the
 first migrated consumer collection — both git-initialized with clean trees.
 
 **Pending / next steps:**
-1. Owner test runs: `research` + `create` a brand-new skill end-to-end; `migrate` the remaining
-   sibling collections into the org hub's `collections/` (the deployment/monorepo structure was
-   settled 2026-06-09 — see retro).
-2. **skillroy is live: github.com/Skillroy-AI/skillroy** (pushed 2026-06-09; authors rewritten to
-   the skillroy.ai identity pre-push; marketplace slug updated in the org hub). Remaining: hub +
-   migrated repo → Bitbucket; run the hub README's plugin test checklist.
-3. Deferred ideas: `explain` skill (CONVENTIONS+README currently serve this); overlay *install*
-   tooling (adapter files are copied by hand today); `skills-ref` as a native dependency once a
-   Linux-side node exists; Cursor user-level skills support (unverified) for the meta-skills.
+1. **First real collection migration → the org hub** (the next session's opener): take
+   `<org>-gcp-kb-skills` → `<hub>/collections/kb-gcp` with `migrate`. Three judgment calls to
+   settle first (all owner/SME decisions, like `tlog` was): the **skill rename** (`<org>-gcp-kb`
+   repeats the domain — its `tools/`+`_index/` paths reference the old folder name, so the rename is
+   more than a `mv`); the **domain token** (reuse `iac`, or propose a new `gcp`/`<org>-cloud`?); and
+   re-validating the (already-written) `resources.yaml` against the catalog after the move. Then add
+   the collection to the hub's `marketplace.json`.
+2. Owner test runs: `research` + `create` a brand-new skill end-to-end.
+3. Pushes: hub (`<org>-skillroy`) + `dx-tlog` → Bitbucket Sandpit; run the hub README's plugin test
+   checklist. (skillroy is already live on GitHub.)
+4. Deferred: `explain` skill; overlay *install* tooling (adapter files copied by hand today);
+   `skills-ref` as a native dep once a Linux-side node exists; Cursor user-level skills (unverified).
 
 (Org-specific in-flight work — e.g. an overlay instrumentation dry-run pending review — is tracked in
 the session memory, not in this vendor-neutral doc.)
@@ -468,3 +473,23 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   contract; tool names flagged for verification against the live connector — the parked org evals
   exist to verify it). Deliberate scope choices, revisitable: no `explain` skill (README +
   CONVENTIONS serve it); overlay install remains copy-by-hand.
+- **2026-06-10 (session 3 cont.) — external-resources manifest (§11) + GitHub identity hygiene.**
+  Inventoried external references across the existing sibling skill collections (saved as
+  `~/Projects/brainstorming/skills-external-references.md`); they collapse into six types
+  (git-repo / confluence-snapshot / product-ref / artifact / live-env / mcp). Generalized the proven
+  `<org>-gcp-kb` "`--repo-root` + cloned:true/false" pattern into a **collection-level
+  `resources.yaml`** convention: `resources/{resources-schema.md, example-resources.yaml,
+  validate-resources.py}` mirroring `tokens/`. Owner decisions ratified: collection-wide defaults +
+  per-skill extensions in one file; the 1.2 GB product-reference corpus ships as **Bitbucket-Downloads
+  zips** (SharePoint has no clean AI-fetch path), declared as an `artifact` + version-pinned
+  `product-ref`; **a confluence-snapshot file *is* a research seed doc** (`<topic>-seed.md`, validated
+  by `validate-seed.py`) — unifying the snapshot↔live-MCP "both" strategy. `lint-skill` gained the
+  `resources` check (well-formed-if-present = error; a non-meta skill referencing a clone/URL/artifact
+  with no manifest = info→warn; meta skills exempt, so skillroy's own skills stay clean).
+  `validate-resources.py`'s secret scan distinguishes a literal `curl -u user:pass` (error) from
+  `$ENV` references (fine). Worked examples written for the two heaviest real cases (`<org>-gcp-kb`,
+  `<org>-data`). **Identity:** GitHub history rewritten to the noreply address
+  `291389289+mikemills-skillroy@users.noreply.github.com` (tree byte-identical, force-pushed); the
+  personal email scrubbed from README/DESIGN/plugin.json → `skillroy-info@skillroy.ai` (deliberate
+  project contact). Held the first real collection migration for a fresh session — it has genuine
+  rename/token decisions (Pending #1).
