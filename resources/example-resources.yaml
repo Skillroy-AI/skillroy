@@ -1,0 +1,68 @@
+# Example external-resources manifest (generic — conforms to resources-schema.md).
+# Lives at a collection root as `resources.yaml`. The real data is per-collection; this is a template
+# showing one entry of each type. No org-specific terms — replace with your own.
+version: 1
+
+# Collection-wide resources (the default granularity).
+resources:
+  # --- git-repo: declare remote + clone root; the skill offers to clone, never auto-clones ---
+  - id: infra-repos
+    type: git-repo
+    description: IaC repos (provisioning roles/modules) the kb skill cross-references for ground truth.
+    remote: git@example.org:my-org/infra-ansible.git
+    local_default: ~/Projects/infra            # where clones are expected
+    env: INFRA_ROOT                             # overrides local_default
+    fetch: "git clone git@example.org:my-org/infra-ansible.git ~/Projects/infra/infra-ansible"
+    provenance: clone branch/SHA recorded into the generated index
+    required: false                             # enrich-if-present; the doc snapshot still answers most questions
+
+  # --- confluence-snapshot: the bundled file is a research seed doc; live page is the source ---
+  - id: domain-kb
+    type: confluence-snapshot
+    description: Offline snapshot of the domain knowledge page; regenerate with the research skill.
+    remote: https://example.atlassian.net/wiki/spaces/KB/pages/12345/Domain+Overview
+    local_default: ./knowledge/domain-seed.md   # a *-seed.md, validated by validate-seed.py
+    version: "page v37 (retrieved 2026-06-10)"
+    provenance: page id + version in the seed-doc header
+    required: true
+
+  # --- product-ref: large versioned corpus; never bundled; index it, point at it ---
+  - id: product-reference
+    type: product-ref
+    description: Versioned product source/schema corpus the data skill indexes (too large to bundle).
+    env: PRODUCT_REF_ROOT
+    local_default: ~/Projects/reference
+    version: "Product.3.161"
+    fetch: "download Product.3.161.zip from the artifact store and unzip into $PRODUCT_REF_ROOT"
+    required: true
+
+  # --- artifact: a binary (or a product-ref zip) in a registry / Bitbucket Downloads area ---
+  - id: server-war
+    type: artifact
+    description: Server WAR needed for full-fidelity (de)serialization.
+    remote: https://artifacts.example/releases/Server-1.2.3.war
+    fetch: "curl -fSL -o ./Server.war https://artifacts.example/releases/Server-1.2.3.war"
+    version: "1.2.3"
+    provenance: WAR filename + version stamped into any rebuilt output
+    required: false
+
+  # --- live-env: not fetched; document the CLI + access; secrets stay as refs ---
+  - id: cloud-env
+    type: live-env
+    description: Running customer environments reached via the cloud CLI over a tunnel.
+    remote: "cloud CLI (authenticated) + tunnel access; per-env state in environments/<env>.json"
+    required: false
+
+  # --- mcp: a connector the skill can use if present; degrade gracefully if not ---
+  - id: wiki-mcp
+    type: mcp
+    description: Wiki MCP connector for live page retrieval (falls back to the snapshot above).
+    remote: "MCP connector: <name>"
+    required: false
+
+# Per-skill extensions: merged onto the collection defaults (same id overrides; new id adds).
+skills:
+  data-lookup:
+    resources:
+      - id: product-reference
+        required: true        # this skill genuinely can't run without the corpus

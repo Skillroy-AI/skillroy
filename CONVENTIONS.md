@@ -1,4 +1,4 @@
-# skillroy conventions (v0.3 — 2026-06-09: eval run logs + simulated-interactive norm; collections §10)
+# skillroy conventions (v0.4 — 2026-06-10: external-resources manifest §11; collections §10; v0.3 run logs)
 
 The house rules `create` scaffolds to and `review` lints against. **Rationale** (the *why*) lives in
 `DESIGN.md`; this file is the *what*. The enforcement table (§9) ties each rule to the `lint-skill`
@@ -162,3 +162,23 @@ a footer line in text mode) so a report can be traced to the rules and catalog t
   wholesale; the skills home then needs the `.claude/*` + `!.claude/skills/` re-include pattern.
 - Agents that read the `.agents/skills/` convention get a symlink: `.agents/skills → ../.claude/skills`
   (requires `core.symlinks` on Windows checkouts).
+
+## 11. External resources
+- A collection declares the **external resources** its skills depend on (IaC repos, Confluence
+  snapshots, large product references, binary artifacts, live environments, MCP connectors) in **one
+  `resources.yaml` at the collection root** — collection-wide by default, with per-skill extensions
+  in the same file. Schema + a worked example: `resources/resources-schema.md` +
+  `resources/example-resources.yaml`.
+- **Locate via an override ladder, fetch on offer — never auto-pull.** A resource resolves
+  `--flag → $env → local_default`; if absent, the skill **reports it and offers the `fetch`
+  command** (same shape as the `--tokens` / `$SKILLROY_TOKENS` catalog ladder, and DESIGN §9's
+  detect-and-surface rule).
+- **Match the handling to the type, not just the size:** bundle `confluence-snapshot`s (small) — and
+  treat the bundled file as a **research seed document** (`<topic>-seed.md`, validated by
+  `validate-seed.py`), with the live page as its source for refresh; **never** bundle a
+  `product-ref` corpus (point at it + version-pin + index it); `artifact`s (incl. product zips in a
+  Bitbucket **Downloads** area) are fetched per-use and **provenance-stamped** with the version used;
+  `live-env`/`mcp` are documented requirements, not shipped files; secrets are always a reference to
+  a secret manager, never stored.
+- *(Future: a `lint-skill` check that every external path/URL a skill references is declared here —
+  the way `--tokens` closed the loop for domains. Not built yet.)*
