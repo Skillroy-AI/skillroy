@@ -2,7 +2,7 @@
 
 **Status:** publish-ready (conventions v0.3; all four skills at `phase: publish`). The whiteboard
 history below is preserved; the retro cadence continues.
-**Owner:** Mike Mills <mike.mills@skillroy.ai>
+**Owner:** Mike Mills <skillroy-info@skillroy.ai>
 **Started:** 2026-06-06
 
 > Started as a whiteboard, deliberately not rushed (§8). Open questions are tracked in §10;

@@ -90,7 +90,7 @@ tokens, renames) for you to decide.
 
 ## License
 
-Copyright 2026 Mike Mills <mike.mills@skillroy.ai>
+Copyright 2026 Mike Mills <skillroy-info@skillroy.ai>
 
 Licensed under the Apache License, Version 2.0. See [`LICENSE`](./LICENSE).
 
@@ -100,7 +100,7 @@ Licensed under the Apache License, Version 2.0. See [`LICENSE`](./LICENSE).
 collection:
   name: skillroy            # brand-named — an allowed exception to <tier>-<domain>
   status: active
-  owner: Mike Mills <mike.mills@skillroy.ai>
+  owner: Mike Mills <skillroy-info@skillroy.ai>
   license: Apache-2.0
   depends-on: []
 ```

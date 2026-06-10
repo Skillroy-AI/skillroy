@@ -2,7 +2,7 @@
   "name": "skillroy",
   "version": "0.1.0",
   "description": "Meta-skills for authoring, reviewing, researching, and migrating Agent Skills: research, create, review, migrate — each with a standalone CLI script (two front doors).",
-  "author": { "name": "Mike Mills", "email": "mike.mills@skillroy.ai" },
+  "author": { "name": "Mike Mills", "email": "skillroy-info@skillroy.ai" },
   "license": "Apache-2.0",
   "keywords": ["agent-skills", "skills", "lint", "scaffold", "meta"],
   "skills": "./.claude/skills/"
