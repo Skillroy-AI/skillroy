@@ -1,6 +1,6 @@
 # skillroy — Design (living document)
 
-**Status:** publish-ready (conventions v0.3; all four skills at `phase: publish`). The whiteboard
+**Status:** publish-ready (conventions v0.4; all four skills at `phase: publish`). The whiteboard
 history below is preserved; the retro cadence continues.
 **Owner:** Mike Mills <skillroy-info@skillroy.ai>
 **Started:** 2026-06-06
@@ -8,7 +8,7 @@ history below is preserved; the retro cadence continues.
 > Started as a whiteboard, deliberately not rushed (§8). Open questions are tracked in §10;
 > decisions and changes are logged in §11 (Retro log) — the retro log is the source of truth.
 
-## Status — resume here (2026-06-10, session 3 cont.)
+## Status — resume here (2026-06-10, session 4)
 
 skillroy (this repo) is **vendor-neutral, Apache-2.0, PUBLIC on GitHub** (`Skillroy-AI/skillroy`;
 commits use a GitHub-noreply identity); org-specific data lives in a separate `<org>-skillroy`
@@ -33,18 +33,19 @@ pass with a recorded run log in `evals/runs/`, official `skills-ref validate` Va
 first migrated consumer collection — both git-initialized with clean trees.
 
 **Pending / next steps:**
-1. **First real collection migration → the org hub** (the next session's opener): take
-   `<org>-gcp-kb-skills` → `<hub>/collections/kb-gcp` with `migrate`. Three judgment calls to
-   settle first (all owner/SME decisions, like `tlog` was): the **skill rename** (`<org>-gcp-kb`
-   repeats the domain — its `tools/`+`_index/` paths reference the old folder name, so the rename is
-   more than a `mv`); the **domain token** (reuse `iac`, or propose a new `gcp`/`<org>-cloud`?); and
-   re-validating the (already-written) `resources.yaml` against the catalog after the move. Then add
-   the collection to the hub's `marketplace.json`.
+1. ~~First real collection migration~~ **done (session 4)**: `<org>-gcp-kb-skills` →
+   `<hub>/collections/kb-gcp`, skill renamed → `provisioning`, token `iac`, phase `adhoc`, lint +
+   `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons: run its
+   evals to earn `publish`; migrate the remaining pure siblings when wanted (`kb-dfm` is the big one
+   — 7 skills sharing an `_index/`, stays ONE collection per the §10 rule).
 2. Owner test runs: `research` + `create` a brand-new skill end-to-end.
 3. Pushes: hub (`<org>-skillroy`) + `dx-tlog` → Bitbucket Sandpit; run the hub README's plugin test
    checklist. (skillroy is already live on GitHub.)
 4. Deferred: `explain` skill; overlay *install* tooling (adapter files copied by hand today);
    `skills-ref` as a native dep once a Linux-side node exists; Cursor user-level skills (unverified).
+   The **gitignore-trap lint check** now has two real-world strikes (see §11 session 4) — promote it
+   from deferred when `lint-skill` next gets attention; it must walk every `.gitignore` from the
+   skills home up to the *repo* root (monorepo nesting is exactly where it bites).
 
 (Org-specific in-flight work — e.g. an overlay instrumentation dry-run pending review — is tracked in
 the session memory, not in this vendor-neutral doc.)
@@ -493,3 +494,22 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   personal email scrubbed from README/DESIGN/plugin.json → `skillroy-info@skillroy.ai` (deliberate
   project contact). Held the first real collection migration for a fresh session — it has genuine
   rename/token decisions (Pending #1).
+- **2026-06-10 (session 4) — first consumer collection migrated: `<org>-gcp-kb-skills` → hub
+  `collections/kb-gcp`.** The `migrate` skill's first pure-collection run (dx-tlog was the code-bound
+  case). Owner decisions: domain token = existing `iac` and resources re-validation (owner's calls);
+  skill rename delegated → **`provisioning`** (knowledge noun per CONVENTIONS §2: the collection name
+  already carries tier+domain; "provisioning" is the org's own pipeline vocabulary, distinguishes the
+  build view from the runtime/operate skill, and leaves room for the planned config-discovery /
+  change-recipe siblings). Phase `adhoc` — publish deferred to a real eval run, as designed.
+  Mechanics that held up: plan/apply copy+inject+symlink with the source left untouched; the feared
+  "rename is more than a `mv`" turned out docs-only — the tools resolve the collection root from
+  `__file__`, so the moved+renamed skill needed zero code-path changes (verified by post-move smoke
+  tests). Authored 4 evals / 13 assertions (index lookup, flow order, the runtime-skill boundary
+  redirect, known-gap degradation); `run-evals` structure-validated, no run yet. Collection got the
+  §10 README block + `plugin.json`, listed in the hub marketplace (`/kb-gcp:provisioning`).
+  **Live catch — the §10 gitignore trap fired in the hub itself:** the hub root ignored `.claude/`
+  *unanchored*, silently swallowing the incoming collection's skills home; caught by `git
+  check-ignore` during the migration, fixed by root-anchoring (`/.claude/`). Strike two for the
+  deferred gitignore-trap lint check, and it sharpened the spec: the check must walk every
+  `.gitignore` from the skills home *up to the repo root*, because monorepo nesting puts the
+  swallowing pattern in a file the collection can't see.
