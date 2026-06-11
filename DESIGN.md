@@ -38,8 +38,10 @@ first migrated consumer collection — both git-initialized with clean trees.
    `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons:
    ~~run its evals~~ **published 2026-06-11** — the first two consumer skills reached `publish`
    (full bar, §11 round 2). ~~kb-dfm~~ **migrated 2026-06-11** (7 skills, one collection, §11
-   round 4); remaining pure siblings when wanted: `<org>-data`, the camel collection, and the
-   gcp-tools repo (owner call on `ops-gcp`).
+   round 4). ~~`<org>-data`~~ **migrated + published 2026-06-11** (§11 round 6 — the
+   corpus-external case). Remaining: the camel collection, and the gcp-tools repo (owner call on
+   `ops-gcp`). **A brief running TODO now lives at the org hub root (`TODO.md`)** — needs-owner
+   items separated from queued work; this doc stays the journal.
 2. ~~Owner test runs~~ **done (2026-06-11)**: charter-driven fresh-session field test took a real
    brief through `research` → `create` to a finished, linting-clean `int` collection end-to-end
    (see §11). Held: routing, source-unreachable handling, no-fabrication substitution, token
@@ -645,3 +647,17 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   ("numeric page version not exposed") was itself stale — the connector does return
   `version.number`; verify-don't-assume cuts both ways, including against fresh verification
   notes. All four produced seeds validated clean on first run.
+- **2026-06-11 (session 4 cont., round 6) — the corpus-external migration (+ publish).** The data
+  collection's distinctive constraint: a ~1.2 GB versioned reference corpus (with its crunch-once
+  `_index/` embedded *inside* it) that must never enter the hub repo. What it exercised: the
+  §11 manifest's locate ladder got **implemented in the tools** (env override → the corpus's
+  long-term home — the one code change the move required; the prior migrations needed none because
+  their indexes traveled); a root-`.gitignore` guard now blocks any `collections/*/reference/`
+  from landing in git; a new domain token entered the catalog as `proposed` (governance ladder,
+  owner ratification queued). The eval run was the strongest yet — **real-corpus**: index-first
+  answers and the diff tool ran against live data, and the degradation eval exercised the ladder's
+  miss path via the env override. PASS 3/3, 10/10; run notes caught **corpus/manifest drift**
+  (a version label convention mismatch + a missing release in the pin — corrected same day),
+  which is precisely the §11 freshness thesis doing its job. Skill renamed to a knowledge noun;
+  lint clean at publish; official validator Valid. Six plugins in the marketplace; eleven
+  published skills org-side.
