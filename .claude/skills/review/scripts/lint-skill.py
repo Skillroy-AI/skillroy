@@ -258,6 +258,70 @@ def collection_findings(path):
     return name, out
 
 
+def gitignore_trap_findings(path):
+    """The gitignore trap (§10; two real-world strikes): a `.gitignore` ANYWHERE between the skills
+    home and the *repo* root that matches the home or a skill file silently loses skills — monorepo
+    nesting is exactly where it bites, so every level must be walked, which is what
+    `git check-ignore` does. Pattern-only check (`--no-index`): already-tracked files still flag,
+    because the trap waits for the next new file. Quiet when there is no enclosing git repo or no
+    git binary (best-effort)."""
+    home = os.path.abspath(path)
+    d, root = home, None
+    while True:
+        if os.path.exists(os.path.join(d, ".git")):  # dir or file (worktree/submodule)
+            root = d
+            break
+        nxt = os.path.dirname(d)
+        if nxt == d:
+            break
+        d = nxt
+    if root is None:
+        return []
+    # Probe only content that MUST be tracked. Runtime/derived dirs (__pycache__, venvs, caches)
+    # are legitimately ignored inside skill folders — flagging them would be the false positive.
+    DERIVED = {"__pycache__", ".venv", "venv", "node_modules", ".pytest_cache", ".mypy_cache"}
+
+    def _is_source(name):
+        return not (name in DERIVED or name.startswith(".") or name.endswith((".pyc", ".pyo")))
+
+    probes = []
+    skill_dirs = [home] if os.path.isfile(os.path.join(home, "SKILL.md")) else \
+        sorted(os.path.dirname(p) for p in glob.glob(os.path.join(home, "*", "SKILL.md")))
+    probes.append(home)
+    for sd in skill_dirs:
+        probes.append(sd)
+        probes.append(os.path.join(sd, "SKILL.md"))
+        for child in sorted(filter(_is_source, os.listdir(sd))):
+            full = os.path.join(sd, child)
+            probes.append(full)
+            if os.path.isdir(full):
+                for f in sorted(filter(_is_source, os.listdir(full)))[:1]:
+                    probes.append(os.path.join(full, f))
+    out = []
+    try:
+        r = subprocess.run(["git", "-C", root, "check-ignore", "-v", "--no-index", "--"] + probes,
+                           capture_output=True, text=True, timeout=15)
+        if r.returncode == 0:
+            seen = set()
+            for ln in r.stdout.splitlines():
+                src, _, rest = ln.partition("\t")
+                if not rest or src in seen:
+                    continue
+                # -v reports the DECIDING pattern, negations included — "!pattern" means the
+                # path is re-included (not ignored), which is the safe shape, not a trap.
+                m = re.match(r"^(.+?):(\d+):(.*)$", src)
+                if m and m.group(3).startswith("!"):
+                    continue
+                seen.add(src)
+                rel = os.path.relpath(rest.strip(), root)
+                out.append(("error", "gitignore-trap",
+                            f"{src} matches '{rel}' — skills under it would be silently lost from git; "
+                            f"use the `.claude/*` + `!.claude/skills/` pattern (CONVENTIONS §10)"))
+    except Exception:
+        pass
+    return out
+
+
 def lint_path(path, phase_override=None, catalog=None):
     if os.path.isfile(os.path.join(path, "SKILL.md")):
         return [lint_skill(path, phase_override, catalog)]
@@ -376,6 +440,34 @@ def self_test():
         assert any(f["code"] == "token" and "alias" in f["message"]
                    for f in lint_skill(mkskill("ali-dom", "AlphaSvc"), catalog=idx)["findings"]), \
             "alias domain not flagged"
+
+        # gitignore-trap (§10): every .gitignore from the skills home up to the REPO root is
+        # consulted; a swallow at the collection level AND one at a monorepo parent both flag;
+        # the safe `.claude/*` + `!.claude/skills/` pattern clears it. Skipped without git.
+        try:
+            giroot = os.path.join(tmp, "mono")
+            home2 = os.path.join(giroot, "collections", "dx-c", ".claude", "skills", "sk")
+            os.makedirs(home2)
+            open(os.path.join(home2, "SKILL.md"), "w").write(
+                '---\nname: sk\ndescription: "x"\n---\n# x\n')
+            subprocess.run(["git", "-C", giroot, "init", "-q"], check=True, timeout=10)
+            ghome = os.path.join(giroot, "collections", "dx-c", ".claude", "skills")
+            assert not gitignore_trap_findings(ghome), "clean tree wrongly trapped"
+            # strike shape 1: collection-level .gitignore swallows .claude/
+            open(os.path.join(giroot, "collections", "dx-c", ".gitignore"), "w").write(".claude/\n")
+            assert any(c == "gitignore-trap" for _, c, _ in gitignore_trap_findings(ghome)), \
+                "collection-level trap missed"
+            # safe pattern clears it
+            open(os.path.join(giroot, "collections", "dx-c", ".gitignore"), "w").write(
+                ".claude/*\n!.claude/skills/\n")
+            assert not gitignore_trap_findings(ghome), "safe pattern wrongly trapped"
+            # strike shape 2: monorepo parent (repo root) swallows collections/ — nesting bite
+            open(os.path.join(giroot, ".gitignore"), "w").write("collections/\n")
+            assert any(c == "gitignore-trap" for _, c, _ in gitignore_trap_findings(ghome)), \
+                "monorepo-parent trap missed"
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            print("  (gitignore-trap case skipped: git unavailable)")
+
         print("self-test OK")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -420,8 +512,13 @@ def main(argv=None):
         args.tokens = tokens_path
     is_single = os.path.isfile(os.path.join(args.path, "SKILL.md"))
     results = lint_path(args.path, args.phase, catalog)
+    gt = gitignore_trap_findings(args.path)
+    if is_single and gt and results:
+        results[0]["findings"].extend(
+            {"severity": s, "code": c, "message": m} for s, c, m in gt)
     if not is_single:
         cname, cf = collection_findings(args.path)
+        cf = cf + gt
         if cf:
             results.insert(0, {"skill": f"(collection: {cname})", "path": args.path, "phase": None,
                                "findings": [{"severity": s, "code": c, "message": m} for s, c, m in cf]})

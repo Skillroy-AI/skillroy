@@ -1,4 +1,4 @@
-# skillroy conventions (v0.4 — 2026-06-10: external-resources manifest §11; collections §10; v0.3 run logs)
+# skillroy conventions (v0.5 — 2026-06-11: gitignore-trap lint promoted §9-§10; v0.4 external-resources manifest §11, collections §10)
 
 The house rules `create` scaffolds to and `review` lints against. **Rationale** (the *why*) lives in
 `DESIGN.md`; this file is the *what*. The enforcement table (§9) ties each rule to the `lint-skill`
@@ -136,6 +136,7 @@ Agent-Skills conformance — run it separately if installed). Severity scales by
 | repo/collection name kebab + no redundant suffix (§2) | `collection-name` | info |
 | `resources.yaml` well-formed if present (§11) | `resources` | error |
 | references external resources but no manifest (§11; non-meta) | `resources` | info → warn at publish |
+| no `.gitignore` from the home up to the REPO root swallows skills (§10) | `gitignore-trap` | error |
 
 Run: `python3 .claude/skills/review/scripts/lint-skill.py <skill-or-collection> [--tokens <catalog>]`.
 Lint output is **provenance-stamped** (skillroy version / commit + token-catalog digest in `--json`;
@@ -162,6 +163,9 @@ a footer line in text mode) so a report can be traced to the rules and catalog t
   skillroy stays vendor-neutral; anything org-specific belongs in the overlay.
 - **Watch for `.gitignore` swallowing the home dir.** Existing repos often ignore `.claude/`
   wholesale; the skills home then needs the `.claude/*` + `!.claude/skills/` re-include pattern.
+  `lint-skill` enforces this (`gitignore-trap`, two real-world strikes): it walks **every**
+  `.gitignore` from the home up to the *repo* root via `git check-ignore` — monorepo nesting is
+  exactly where it bites. Runtime/derived dirs (`__pycache__`, venvs) are exempt by design.
 - Agents that read the `.agents/skills/` convention get a symlink: `.agents/skills → ../.claude/skills`
   (requires `core.symlinks` on Windows checkouts).
 

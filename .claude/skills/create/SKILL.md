@@ -5,7 +5,7 @@ metadata:
   skillroy:
     phase: publish
     tier: meta
-    version: 0.3.0
+    version: 0.3.1
 license: Apache-2.0
 ---
 
@@ -31,6 +31,13 @@ Work in order; skip anything already supplied (a seed doc, a stated tier, a chos
 Skills live in **collections** (a repo of related skills in one domain — CONVENTIONS §10). Establish
 where this skill goes:
 - **Existing collection** → scaffold into its `.claude/skills/` and move on.
+- **Plain repo, not yet a collection** (the common middle case: invoked inside a repo with no
+  collection metadata) → the repo can *become* the collection: add the §10 README metadata block
+  and the `.claude/skills/` home (+ `.agents/skills` symlink) where it stands. Keep its name if it
+  already fits `<tier>-<domain>`; if not, surface the rename as an owner call (names are API
+  contracts — pre-publish is the cheap window). Don't silently nest a new collection *inside* a
+  plain repo; instrumenting in place is usually what being invoked there means — but it's still
+  the user's call, same as the bullet below.
 - **New collection** → settle the collection name (`<tier>-<domain>`; brand names are the ratified
   exception) and scaffold the shell with `scripts/new-collection.py` (use `--with-skill` to create
   the first skill in the same run). The script is git-free by design — offer to `git init -b main`
