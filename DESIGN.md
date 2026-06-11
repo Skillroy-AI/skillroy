@@ -8,19 +8,21 @@ history below is preserved; the retro cadence continues.
 > Started as a whiteboard, deliberately not rushed (§8). Open questions are tracked in §10;
 > decisions and changes are logged in §11 (Retro log) — the retro log is the source of truth.
 
-## Status — resume here (2026-06-11, session 4 cont.)
+## Status — resume here (2026-06-11, session 5)
 
 skillroy (this repo) is **vendor-neutral, Apache-2.0, PUBLIC on GitHub** (`Skillroy-AI/skillroy`;
 commits use a GitHub-noreply identity); org-specific data lives in a separate `<org>-skillroy`
 overlay. Layout home = `.claude/skills/`. Authoritative rules = `CONVENTIONS.md` (**v0.4**:
 rule→check→severity table, eval **run-log** convention, simulated-interactive norm,
-collections/overlays §10, **external-resources manifest §11**).
+collections/overlays §10, **external-resources manifest §11**; **v0.5**: the `gitignore-trap`
+check promoted into `lint-skill` after two real-world strikes).
 
 **Built & green — all FOUR skills at `phase: publish`** (full bar each: lint clean at publish, evals
 pass with a recorded run log in `evals/runs/`, official `skills-ref validate` Valid):
-- **`research`** (v0.2.0, second door `validate-seed.py`), **`create`**, **`review`** (v0.2.0; name
-  kept per the ratified §2 exception), **`migrate`** (new this session — mechanical migration
-  scripted via `migrate-skill.py` plan/apply; judgment calls are inputs, publish refused by design).
+- **`research`** (v0.2.0, second door `validate-seed.py`), **`create`** (v0.3.1 — §0 covers the
+  plain-repo middle case), **`review`** (v0.3.0 — gitignore-trap check; name kept per the ratified
+  §2 exception), **`migrate`** (mechanical migration scripted via `migrate-skill.py` plan/apply;
+  judgment calls are inputs, publish refused by design).
 - Scripts (stdlib, all `--self-test`): `new-skill`, `new-collection`, `lint-skill` (+ provenance
   stamp, `evals-run` + `resources` checks), `run-evals` (+ `--log`), `validate-seed`,
   `validate-tokens`, `validate-resources`, `migrate-skill`.
@@ -38,10 +40,14 @@ first migrated consumer collection — both git-initialized with clean trees.
    `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons:
    ~~run its evals~~ **published 2026-06-11** — the first two consumer skills reached `publish`
    (full bar, §11 round 2). ~~kb-dfm~~ **migrated 2026-06-11** (7 skills, one collection, §11
-   round 4). ~~`<org>-data`~~ **migrated + published 2026-06-11** (§11 round 6 — the
-   corpus-external case). Remaining: the camel collection, and the gcp-tools repo (owner call on
-   `ops-gcp`). **A brief running TODO now lives at the org hub root (`TODO.md`)** — needs-owner
-   items separated from queued work; this doc stays the journal.
+   round 4; renamed → `ops-dfm` 2026-06-11, owner-ratified — tier follows contents).
+   ~~`<org>-data`~~ **migrated + published 2026-06-11** (§11 round 6 — the corpus-external case).
+   ~~camel + gcp-tools~~ **migrated 2026-06-11 (session 5, §11 round 7)** — `ops-gcp`
+   (foundation; first-ever VCS home) then `ops-camel` (leaf); consumer seam = 4-rung ladder;
+   publish pending only the official validator (owner's hands — platform blocked the package
+   fetch for the agent). **All pure siblings are now in.** **A brief running TODO lives at the
+   org hub root (`TODO.md`)** — needs-owner items separated from queued work; this doc stays
+   the journal.
 2. ~~Owner test runs~~ **done (2026-06-11)**: charter-driven fresh-session field test took a real
    brief through `research` → `create` to a finished, linting-clean `int` collection end-to-end
    (see §11). Held: routing, source-unreachable handling, no-fabrication substitution, token
@@ -661,3 +667,33 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   which is precisely the §11 freshness thesis doing its job. Skill renamed to a knowledge noun;
   lint clean at publish; official validator Valid. Six plugins in the marketplace; eleven
   published skills org-side.
+- **2026-06-11 (session 5, round 7) — the foundation-and-leaf migrations; the trap check earns
+  its row.** The last two siblings entered the hub in dependency order: the **foundation first**
+  (the env-registry/IAP tools repo → `ops-gcp`, its skill renamed to a bare noun since the hub
+  now carries the context), then the **leaf** (the messaging-diagnosis repo → `ops-camel`),
+  so the leaf's references were written once against final names. Two findings worth keeping.
+  *Both repos turned out never to have been under git* — the migration was their first version
+  control, and one of them had an open design question in its own provenance doc ("put this
+  under git?") that the move resolved as a side effect. And the **consumer seam** generalized
+  cleanly: a 4-rung resolution ladder (explicit flag → env var → hub-sibling → legacy checkout)
+  with the renamed skill folder tried under both its new and old names — every rung stays
+  functional for stragglers, verified empirically on both rungs. A collection rename also
+  landed pre-reliance (`kb-` → `ops-` where 6 of 7 skills are ops): tier follows the *contents*,
+  not the source repo's name — now stated in the collections doc. The hardening batch closed
+  every offline-door finding from round 5's runs (a fixture mislabeled "live", time filters
+  ignored under dry-run, two pre-gate live reads — plus two more found while fixing: a live
+  consumer-check and a live browse ahead of their gates). The re-run pattern matured: fresh
+  subagents under "offline doors only" now run a **live-contact tripwire** (shimmed
+  gcloud/ssh/mongo first on PATH, logging every invocation — zero recorded), which converts
+  "we believe nothing touched live" into evidence. All re-runs and both new publish-gate runs
+  PASS. One gate didn't close: the platform's permission layer blocked fetching the external
+  validator package (supply-chain rule) — the right call for an agent, so the official
+  base-spec validation moved to the owner's hands and the two new skills hold at `adhoc`
+  until it; the bar bends for no one, including the maintainer. Meta-side, the
+  **gitignore-trap check got promoted** after its two real-world strikes (CONVENTIONS v0.5):
+  it walks every `.gitignore` from the skills home to the *repo* root (`git check-ignore`,
+  monorepo nesting is where it bites) — and its first draft promptly false-positived on
+  `__pycache__`, teaching the rule its derived-dirs exemption and a negation-aware parse
+  before it landed. `create` §0 gained the plain-repo middle case (instrument-in-place beats
+  silently nesting). Eight plugins in the marketplace; thirteen published skills org-side,
+  two more pending only the official validator.
