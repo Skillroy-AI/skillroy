@@ -38,7 +38,11 @@ first migrated consumer collection — both git-initialized with clean trees.
    `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons: run its
    evals to earn `publish`; migrate the remaining pure siblings when wanted (`kb-dfm` is the big one
    — 7 skills sharing an `_index/`, stays ONE collection per the §10 rule).
-2. Owner test runs: `research` + `create` a brand-new skill end-to-end.
+2. ~~Owner test runs~~ **done (2026-06-11)**: charter-driven fresh-session field test took a real
+   brief through `research` → `create` to a finished, linting-clean `int` collection end-to-end
+   (see §11). Held: routing, source-unreachable handling, no-fabrication substitution, token
+   governance. Finding → `create` §0 destination fix (v0.3.0, evals re-run). Still unobserved:
+   the truly-no-catalog ladder bottom; the publish-refusal probe.
 3. Pushes: hub (`<org>-skillroy`) + `dx-tlog` → Bitbucket Sandpit; run the hub README's plugin test
    checklist. (skillroy is already live on GitHub.)
 4. Deferred: `explain` skill; overlay *install* tooling (adapter files copied by hand today);
@@ -285,6 +289,16 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   2026-06-09): single source of truth; `create` and `review` reference it by name (no cross-skill
   path). Trade-off: a skill distributed *standalone* would need `CONVENTIONS.md` copied in — a
   non-issue for the co-located suite / whole-repo plugin.
+- [ ] **Skill *update/refresh* loop** (surfaced by the first owner field test, 2026-06-11): a skill
+  built from a seed doc has no owned path for new research → content updates. Sketch *(rec)*:
+  `research` gains an update-aware mode — pointed at an existing skill, it finds the cited seed doc
+  + the `resources.yaml` refresh sources, re-gathers, and emits a seed v2 **with a delta summary**;
+  a thin *update* workflow (a conductor, not a fifth heavyweight skill) then proposes content edits
+  from the delta (owner ratifies — never silent rewrites, the `migrate` posture), bumps the version,
+  and **forces the §8 eval re-run** so `publish` is re-earned, not retained by inertia. Auto-trigger
+  is dispreferred: `research` should *detect* an existing-skill context and *offer* the update path
+  (detect-and-surface, same posture as §11 resources). Propagation is judgment work → conversational
+  door primary; scripted validators (seed diff, version-axis check) as the second door.
 
 ## 11. Retro log
 
@@ -513,3 +527,27 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   deferred gitignore-trap lint check, and it sharpened the spec: the check must walk every
   `.gitignore` from the skills home *up to the repo root*, because monorepo nesting puts the
   swallowing pattern in a file the collection can't see.
+- **2026-06-11 (session 4 cont.) — owner field test (`research`→`create`), `create` §0 fix,
+  neutrality scrub.** First clean-context consumer run, driven by a written test charter kept
+  *outside* this repo so the test session couldn't read it: a fresh session here took a real brief
+  (a Bitbucket Cloud REST integration skill) through research → create to a finished, linting-clean
+  `int` collection in the org hub — end-to-end in one ~18-minute session. **Held up:**
+  description-routing with no skill names in the prompt; unreachable-source handling (a wiki page
+  with no connector → asked plainly, then recorded it in the seed's gaps section); a no-fabrication
+  substitution *better* than required (rendered docs pages blew the fetch budget → switched to the
+  canonical OpenAPI spec they're generated from, disclosed and provenance-logged); token governance
+  (missing domain token → surfaced with options, owner chose "add", landed as `status: proposed`
+  for SME ratification — the §5 ladder followed exactly); all writes left uncommitted for review.
+  **Finding:** the session *chose* the new collection's parent (the org hub — outside the invoking
+  repo) and disclosed it in a question's *preamble* rather than asking; the owner ratified only
+  implicitly by submitting the form. Fix shipped: `create` §0 now makes the parent location an
+  explicit user decision — "in the question itself, not in a preamble" — with sign-off required
+  before any write outside the invoking repo. `create` v0.2.0→**v0.3.0**; destination assertions
+  added to evals 2 and 5; full 6-eval re-run recorded in `evals/runs/2026-06-11.md` — PASS 6/6
+  evals, 30/30 expectations (run notes flag one §0 wording gap for the plain-repo/not-yet-a-collection
+  middle case; minor, future pass). **Also
+  surfaced:** the catalog lookup ladder's bottom rung (find a local org-overlay clone) worked as
+  designed — so the *truly-no-catalog* path remains unobserved (a future test); and the org-named
+  breadcrumbs in this public doc demonstrably steered the session → **literal org-name scrub of
+  DESIGN.md executed** (working tree only; git history retains the names — owner decides at push
+  time whether a history rewrite is warranted). New §10 item: the skill *update/refresh* loop.
