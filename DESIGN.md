@@ -37,8 +37,9 @@ first migrated consumer collection — both git-initialized with clean trees.
    `<hub>/collections/kb-gcp`, skill renamed → `provisioning`, token `iac`, phase `adhoc`, lint +
    `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons:
    ~~run its evals~~ **published 2026-06-11** — the first two consumer skills reached `publish`
-   (full bar, §11 round 2); migrate the remaining pure siblings when wanted (`kb-dfm` is the big one
-   — 7 skills sharing an `_index/`, stays ONE collection per the §10 rule).
+   (full bar, §11 round 2). ~~kb-dfm~~ **migrated 2026-06-11** (7 skills, one collection, §11
+   round 4); remaining pure siblings when wanted: `<org>-data`, the camel collection, and the
+   gcp-tools repo (owner call on `ops-gcp`).
 2. ~~Owner test runs~~ **done (2026-06-11)**: charter-driven fresh-session field test took a real
    brief through `research` → `create` to a finished, linting-clean `int` collection end-to-end
    (see §11). Held: routing, source-unreachable handling, no-fabrication substitution, token
@@ -599,3 +600,24 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   fetch exposes `lastModified`, not the numeric page version — recorded as the freshness pin.
   Remaining: the formal org-eval run of the research extension (adapter installed into a research
   skill instance + the degradation case).
+- **2026-06-11 (session 4 cont., round 4) — the 7-skill collection migrated (the "big one").**
+  Largest migration yet: a knowledge skill + six operational skills sharing one `_index/` and a
+  cross-skill tool seam, kept as ONE collection per §10. What the size exercised that the earlier
+  migrations didn't: **(1) multi-skill renames with a blast radius** — ~120 references across
+  SKILL.mds, tools, and root docs, handled by ordered longest-first string mapping; the rename
+  slate also *disambiguated* a confusable pair (the automated end-to-end proof vs the
+  customer-facing ceremony got distinct verb names instead of near-synonyms). **(2) Post-rename
+  proof by self-test** — every tool ships an offline `--self-test`; 12/12 passed after the move,
+  including the orchestrator skill's cross-skill import of another skill's tool primitives — far
+  stronger evidence than path-grepping. **(3) Per-skill tiers in one collection** — the set is
+  1×kb + 6×ops; tiers were set honestly per skill while the collection kept its owner-given
+  kb-prefixed name (flagged to the owner as a cheap pre-publish rename if wanted). **(4) The
+  description length limit caught fire for real** — two source descriptions exceeded the base
+  spec's 1024 chars (lint warned; the official validator would reject); compressed with all
+  trigger families preserved — the first compliance-driven *content* edit a migration has needed,
+  noted as such in the commit. **(5) resources.yaml worked example #4** — the sibling-project
+  seam: the ops tools already implemented a flag→env→local-default ladder in code, and the
+  manifest entry simply declares the same ladder (env-var rung included), which is the
+  §11 thesis working in reverse. 21 evals / 64 assertions authored across the seven (eval runs
+  deferred — publish earned later, as designed); lint 7/7 finding-free vs the ratified catalog;
+  official `skills-ref validate` Valid ×7; source repo untouched.
