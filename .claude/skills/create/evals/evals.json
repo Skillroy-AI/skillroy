@@ -25,6 +25,7 @@
         "The skill asks what the new skill should do and when it should trigger (the what + when).",
         "The skill asks whether it is an action (verb) or knowledge (noun) skill, and for the tier.",
         "The skill asks for the phase (brainstorming / adhoc / publish).",
+        "The skill establishes where the skill will live (which collection, or the parent location for a new one) rather than silently choosing a destination.",
         "The skill does not fabricate a name, tier, or canonical token on the user's behalf."
       ]
     },
@@ -59,6 +60,7 @@
       "files": [],
       "expectations": [
         "A compliant <tier>-<domain> collection name is proposed (not the user's words verbatim if non-compliant).",
+        "The parent location for the new collection is decided by the user in the question itself (proposed with rationale, not stated in a preamble and acted on); any write outside the invoking repo gets explicit sign-off first.",
         "The collection shell is scaffolded: README containing a collection metadata block with status: experimental, a .claude/skills/ home, a .gitignore that does not swallow the skills home, and the .agents/skills symlink.",
         "The first skill is scaffolded inside the new collection's home and inherits the collection's tier.",
         "git init is offered as a follow-up step, not run by the scaffolder.",

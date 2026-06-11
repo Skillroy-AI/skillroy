@@ -5,7 +5,7 @@ metadata:
   skillroy:
     phase: publish
     tier: meta
-    version: 0.2.0
+    version: 0.3.0
 license: Apache-2.0
 ---
 
@@ -37,6 +37,11 @@ where this skill goes:
   and make the initial commit as a follow-up, and remind the user a new collection starts
   `status: experimental` in its README metadata block (promote to `active` once it has real,
   linted content).
+- **Where it lives is the user's call.** For a new collection, the *parent location* — the current
+  repo, an org hub's `collections/`, or a brand-new standalone directory/repo — is a judgment call
+  like tier: propose one with your reasoning, but the user decides, **in the question itself, not in
+  a preamble around it** (a destination stated in passing and then acted on is not a decision the
+  user made). Get explicit sign-off before writing anything outside the repo you were invoked in.
 
 ### 1. Capture intent
 Establish, asking only for what's missing:
