@@ -242,26 +242,26 @@ item in §10 resolves — the prompt is always "does looking back change anythin
 
 ## 10. Open questions / decisions pending
 
-- [ ] Canonical-token enforcement: phase-dependent *(rec)* vs always-MUST vs always-SHOULD.
+- [x] Canonical-token enforcement: phase-dependent *(rec)* vs always-MUST vs always-SHOULD.
   Answer:  phase-dependent - brainstorming/poc = SHOULD, publish = MUST
 - [x] skillroy's own tier: **`meta-`** (decided 2026-06-06). `dx-` stays reserved.
-- [ ] skillroy shape: multi-skill repo (separate author / review / explain) vs single skill w/ modes.
+- [x] skillroy shape: multi-skill repo (separate author / review / explain) vs single skill w/ modes.
   Answer: multi-skill repo
 - [ ] Where the **phase** value lives (frontmatter vs README block vs STATUS file)
-- [ ] Token-catalog format: YAML vs JSON.
+- [x] Token-catalog format: YAML vs JSON.
   Answer:  YAML
-- [ ] Does `phase` govern AI working-style *(rec)* or is it just metadata?
+- [x] Does `phase` govern AI working-style *(rec)* or is it just metadata?
   Answer:  Phase should influence AI working style as you describe above, i.e., branstorming is the time to surface open questions, revisit decisions, etc.
-- [ ] <org>-skillroy license (proprietary / internal vs other).
+- [x] <org>-skillroy license (proprietary / internal vs other).
   Answer:  <org>-skillroy will be proprietary/internal only
-- [ ] **Skill layout**: `.claude/skills/<skill>/` (used now — matches existing projects, loadable in
+- [x] **Skill layout**: `.claude/skills/<skill>/` (used now — matches existing projects, loadable in
   Claude Code) vs the conventions-doc §10 top-level `<skill>/` layout (more agent-neutral). Reconcile
   when designing the monorepo. *(dogfooding tension surfaced by the research import.)*
   Answer:  Please use agent-neutral format where possible.  I'm open to the possibility of including agent-neutral and agent-specific conventions, if it provides a tangible benefit, so please surface if a situation like that arises.  For example, our company has widely deployed Cursor, and so if there is a Cursor-specific skill feature that might make it easier to use or install, I would want to know about that. 
-- [ ] **Evals convention**: where eval files live + format (now `<skill>/evals/evals.json`). Make
+- [x] **Evals convention**: where eval files live + format (now `<skill>/evals/evals.json`). Make
   shipping evals a publish-bar item?
   Answer:  Let's assume evals should be a publish-bar item; we can revisit during development of actual skills to see how it goes.
-- [ ] **Authoring-skill name** referenced by `research` ("skill-creator"): rename to a verb
+- [x] **Authoring-skill name** referenced by `research` ("skill-creator"): rename to a verb
   (`create` / `author`) to fit our own rules, or keep the Anthropic-style name?
   Answer:  Go with Anthropic conventions and your best judgment, ask me if a decision needs to be made.  The "research" skill was developed in a separate chat without this context.
 - [x] **`research` second door** (optional): a standalone seed-doc *validator* script (template +
@@ -289,16 +289,17 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   2026-06-09): single source of truth; `create` and `review` reference it by name (no cross-skill
   path). Trade-off: a skill distributed *standalone* would need `CONVENTIONS.md` copied in — a
   non-issue for the co-located suite / whole-repo plugin.
-- [ ] **Skill *update/refresh* loop** (surfaced by the first owner field test, 2026-06-11): a skill
+- [x] **Skill *update/refresh* loop** (surfaced by the first owner field test, 2026-06-11): a skill
   built from a seed doc has no owned path for new research → content updates. Sketch *(rec)*:
   `research` gains an update-aware mode — pointed at an existing skill, it finds the cited seed doc
   + the `resources.yaml` refresh sources, re-gathers, and emits a seed v2 **with a delta summary**;
-  a thin *update* workflow (a conductor, not a fifth heavyweight skill) then proposes content edits
-  from the delta (owner ratifies — never silent rewrites, the `migrate` posture), bumps the version,
-  and **forces the §8 eval re-run** so `publish` is re-earned, not retained by inertia. Auto-trigger
-  is dispreferred: `research` should *detect* an existing-skill context and *offer* the update path
-  (detect-and-surface, same posture as §11 resources). Propagation is judgment work → conversational
-  door primary; scripted validators (seed diff, version-axis check) as the second door.
+    a thin *update* workflow (a conductor, not a fifth heavyweight skill) then proposes content edits
+    from the delta (owner ratifies — never silent rewrites, the `migrate` posture), bumps the version,
+    and **forces the §8 eval re-run** so `publish` is re-earned, not retained by inertia. Auto-trigger
+    is dispreferred: `research` should *detect* an existing-skill context and *offer* the update path
+    (detect-and-surface, same posture as §11 resources). Propagation is judgment work → conversational
+    door primary; scripted validators (seed diff, version-axis check) as the second door.
+    Answer:  I agree with the above.
 
 ## 11. Retro log
 
