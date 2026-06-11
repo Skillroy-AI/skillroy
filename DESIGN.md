@@ -8,7 +8,7 @@ history below is preserved; the retro cadence continues.
 > Started as a whiteboard, deliberately not rushed (§8). Open questions are tracked in §10;
 > decisions and changes are logged in §11 (Retro log) — the retro log is the source of truth.
 
-## Status — resume here (2026-06-10, session 4)
+## Status — resume here (2026-06-11, session 4 cont.)
 
 skillroy (this repo) is **vendor-neutral, Apache-2.0, PUBLIC on GitHub** (`Skillroy-AI/skillroy`;
 commits use a GitHub-noreply identity); org-specific data lives in a separate `<org>-skillroy`
@@ -35,8 +35,9 @@ first migrated consumer collection — both git-initialized with clean trees.
 **Pending / next steps:**
 1. ~~First real collection migration~~ **done (session 4)**: `<org>-gcp-kb-skills` →
    `<hub>/collections/kb-gcp`, skill renamed → `provisioning`, token `iac`, phase `adhoc`, lint +
-   `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons: run its
-   evals to earn `publish`; migrate the remaining pure siblings when wanted (`kb-dfm` is the big one
+   `validate-resources` green, listed in the hub `marketplace.json` (see §11). Follow-ons:
+   ~~run its evals~~ **published 2026-06-11** — the first two consumer skills reached `publish`
+   (full bar, §11 round 2); migrate the remaining pure siblings when wanted (`kb-dfm` is the big one
    — 7 skills sharing an `_index/`, stays ONE collection per the §10 rule).
 2. ~~Owner test runs~~ **done (2026-06-11)**: charter-driven fresh-session field test took a real
    brief through `research` → `create` to a finished, linting-clean `int` collection end-to-end
@@ -44,7 +45,8 @@ first migrated consumer collection — both git-initialized with clean trees.
    governance. Finding → `create` §0 destination fix (v0.3.0, evals re-run). Still unobserved:
    the truly-no-catalog ladder bottom; the publish-refusal probe.
 3. Pushes: hub (`<org>-skillroy`) + `dx-tlog` → Bitbucket Sandpit; run the hub README's plugin test
-   checklist. (skillroy is already live on GitHub.)
+   checklist. (skillroy is live on GitHub; history neutrality-rewritten and force-pushed
+   2026-06-11 — the public remote is org-name-free end to end.)
 4. Deferred: `explain` skill; overlay *install* tooling (adapter files copied by hand today);
    `skills-ref` as a native dep once a Linux-side node exists; Cursor user-level skills (unverified).
    The **gitignore-trap lint check** now has two real-world strikes (see §11 session 4) — promote it
@@ -552,3 +554,23 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   breadcrumbs in this public doc demonstrably steered the session → **literal org-name scrub of
   DESIGN.md executed** (working tree only; git history retains the names — owner decides at push
   time whether a history rewrite is warranted). New §10 item: the skill *update/refresh* loop.
+- **2026-06-11 (session 4 cont., round 2) — history rewrite pushed; the first two consumer skills
+  reach `publish`.** Owner ratified three things: the §10 update/refresh-loop design (build
+  deferred; pilot = the int collection's wiki-conventions retrieval), the new org domain token
+  (proposed → confirmed), and the **all-in-one-but-partitioned** grain for org content in the int
+  collection (org-sourced material stays in its own seed/section so a future vanilla/org split — or
+  an official vendor-maintained skill appearing — stays a file-level extraction; recorded in that
+  collection's `resources.yaml`). **History neutrality rewrite:** the org-name scrub extended to git
+  history — `filter-branch` tree+msg filters over all 15 commits with three case-variant catch-all
+  rules (enumeration first proved exactly five lowercase compound variants existed; no emails, no
+  standalone capitalized forms); tip tree verified **byte-identical** pre/post; `refs/original`
+  purged, reflog expired, gc'd; **force-pushed** with the owner's explicit authorization — the
+  public remote history is now org-name-free end to end. **Publishes:** `provisioning` (kb
+  collection) PASS 4/4 evals, 13/13 expectations; `manage-prs-repos` (int collection) PASS 3/3,
+  9/9 under the **credentials-unset** condition — every invocation stopped at the script's env gate
+  pre-network, which is the documented degradation path doubling as evidence the gate works
+  (live-API / 202-async verification recorded in the run log as an available follow-up). Both:
+  lint at publish clean vs the ratified catalog, official `skills-ref validate` (0.1.5, Windows
+  npx) Valid, §8 run logs recorded. A pattern worth keeping emerged: **fresh subagents with no
+  authoring context run the evals; the maintainer records the log** — the author grading their own
+  homework was the field test's original worry, and this splits it cleanly.
