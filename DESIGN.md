@@ -302,6 +302,8 @@ item in §10 resolves — the prompt is always "does looking back change anythin
     (detect-and-surface, same posture as §11 resources). Propagation is judgment work → conversational
     door primary; scripted validators (seed diff, version-axis check) as the second door.
     Answer:  I agree with the above.
+  **Pilot executed 2026-06-11** (the int collection's wiki-conventions retrieval) — the loop's
+  shape held end-to-end; see §11 round 3.
 
 ## 11. Retro log
 
@@ -574,3 +576,26 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   npx) Valid, §8 run logs recorded. A pattern worth keeping emerged: **fresh subagents with no
   authoring context run the evals; the maintainer records the log** — the author grading their own
   homework was the field test's original worry, and this splits it cleanly.
+- **2026-06-11 (session 4 cont., round 3) — the update/refresh-loop pilot ran end-to-end.** With
+  the wiki connector re-scoped to user level (owner action; cached OAuth carried across scopes —
+  identity verified first at the owner's request: right account, right site; the connector's
+  write scopes were noted and unused), the ratified §10 loop ran against the int collection's
+  declared wiki-conventions gap. The owner pinned a **7-page source set** from a live resolution
+  list (the base skill's confirm-before-fetch gate, satisfied by selection — no canonical
+  "conventions" page exists; the set spans access/accounts, developer workflow, and governance
+  pages). Retrieval followed the verified adapter contract (paraphrase-don't-copy, per-statement
+  provenance, confidentiality inherited); the org-conventions seed **validated clean first run**;
+  the manifest gap entry flipped to a pinned, freshness-stamped snapshot. **The loop's
+  distinctive steps held:** content edits proposed as a delta and **ratified before any skill
+  text changed**; version bumped (0.1.0→0.2.0); eval re-run forced (4/4 evals, 12/12
+  expectations — publish *re-earned*, with the new conventions behavior observed live: the merge
+  confirmation now states that a merge is usually a release, and an ad-hoc-reviewer request was
+  answered with the default-reviewers gate rather than compliance). Two earlier predictions
+  validated: the v0.1.0 run-log ambiguity (elicit reviewers at PR create?) was settled **by the
+  retrieved conventions themselves** — default reviewers are repo-configured and auto-applied —
+  exactly where that run note said it would be; and the all-in-one-partitioned grain proved
+  mechanical (org content landed as its own seed + one bounded section; vanilla material
+  untouched). One field-mapping discovery fed back into the adapter: the connector's markdown
+  fetch exposes `lastModified`, not the numeric page version — recorded as the freshness pin.
+  Remaining: the formal org-eval run of the research extension (adapter installed into a research
+  skill instance + the degradation case).
