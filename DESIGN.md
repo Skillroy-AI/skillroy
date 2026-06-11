@@ -621,3 +621,27 @@ item in §10 resolves — the prompt is always "does looking back change anythin
   §11 thesis working in reverse. 21 evals / 64 assertions authored across the seven (eval runs
   deferred — publish earned later, as designed); lint 7/7 finding-free vs the ratified catalog;
   official `skills-ref validate` Valid ×7; source repo untouched.
+- **2026-06-11 (session 4 cont., round 5) — eight publish gates in one round: the 7-skill
+  collection + the research extension's formal eval run.** The seven ops/kb skills ran their
+  gates via **three parallel fresh subagents** grouped by skill family, under a formalized
+  **"offline doors only"** condition: no live environment contact anywhere; mutating sends and
+  destructive removals never reached a live operation — approvals and gates were simulated and
+  judged, with identical invocations re-run through each tool's `--dry-run`/`--self-test` doors
+  as evidence (all 21 evals, 65 expectations, PASS). The runs earned their keep beyond the
+  verdicts: **four tool-hardening findings** went into the §8 logs (a dry-run fixture mislabeled
+  "live"; a dry-run door ignoring time windows; a pre-gate live read on one orchestrator's
+  default path; a `--dry-run` flag not honored on a remove-only path) — exactly the latent
+  issues only behaviour runs surface. Defense-in-depth observation: the session's permission
+  layer independently blocked even a safe argument-gate probe in the destructive skill's run —
+  the run condition and the platform guard both held, separately. **The extension run** (the
+  overlay's parked evals): two prepared skill instances — adapter-installed and vanilla — because
+  the degradation eval requires the extension *absent*; a fifth eval was authored first, pinning
+  the adapter happy path the original four never exercised (the pilot had proven it only
+  informally). PASS 5/5, 32/32: mixed-source synthesis, elicitation, graceful degradation (the
+  adapter *contract* governed even with raw connector tools attached to the session — the right
+  semantics), local-file ingestion (real attachment substituted per the eval's own instruction;
+  PDF path remains unexercised), and the live happy path (read-only, confirm-before-fetch,
+  freshness-pinned provenance). One humbling correction: the adapter's day-old field-mapping note
+  ("numeric page version not exposed") was itself stale — the connector does return
+  `version.number`; verify-don't-assume cuts both ways, including against fresh verification
+  notes. All four produced seeds validated clean on first run.
